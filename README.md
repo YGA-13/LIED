@@ -33,7 +33,7 @@ Built with modern web tech so it's smooth and fast:
 
 1. **Clone the repository**:
    ```bash
-   git clone https://github.com/your_username/LIED.git
+   git clone git@github.com:YGA-13/LIED.git
    cd LIED
    ```
 
@@ -71,7 +71,7 @@ Access at: `http://localhost:8000`
 
 For a faster setup:
 ```bash
-git clone https://github.com/your_username/LIED.git
+git clone git@github.com:YGA-13/LIED.git
 cd LIED
 pip install -r requirements.txt
 npm install
