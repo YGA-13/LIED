@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Por qué LIED es Esencial para Pianistas</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    {% load static %}
+</head>
+<body class="bg-white text-gray-800">
+    
+    <!-- Header -->
+    <header class="fixed w-full bg-black text-white shadow-lg z-50">
+        <div class="container mx-auto flex justify-between items-center p-4">
+            <div>
+                <a href="{% url 'home' %}" class="text-3xl font-bold text-red-600 hover:text-red-700 transition-colors">LIED</a>
+            </div>
+            <nav class="space-x-6 hidden md:flex items-center">
+                {% if user.is_authenticated %}
+                    <p class="text-white mr-4">{{ user.username }}</p>
+                    <form action="{% url 'logout' %}" method="post">
+                        {% csrf_token %}
+                        <button type="submit" class="text-white hover:text-red-600 transition-colors">Cerrar sesión</button>
+                    </form>
+                {% else %}
+                    <a href="{% url 'login' %}" class="hover:text-red-600 transition-colors">Iniciar sesión</a>
+                {% endif %}
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="h-screen bg-cover bg-center relative" style="background-image: url('{% static 'img/features.jpg' %}');">
+        <div class="absolute inset-0 bg-black bg-opacity-70 flex items-center justify-center">
+            <div class="text-center text-white px-4">
+                <h1 class="text-5xl md:text-6xl font-bold mb-6">¿Por qué LIED es esencial para pianistas?</h1>
+                <p class="text-xl md:text-2xl mb-8">Transforma tu proceso de aprendizaje y práctica musical</p>
+                <a href="#beneficios" class="inline-block bg-red-600 hover:bg-red-700 text-white py-3 px-8 rounded-lg text-lg transition duration-300">Descubre los beneficios</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Introducción -->
+    <section class="py-20 bg-gray-100">
+        <div class="container mx-auto px-4">
+            <blockquote class="text-2xl italic border-l-4 border-red-600 pl-6 max-w-4xl mx-auto text-gray-700">
+                "Como pianista, dedicas horas cada día a practicar, estudiar partituras y perfeccionar tu técnica. Sin embargo, ¿realmente estás aprovechando al máximo tu tiempo? LIED está aquí para transformar tu proceso de aprendizaje y práctica, haciéndolo más eficiente, organizado y personalizado."
+            </blockquote>
+        </div>
+    </section>
+
+    <!-- Problemas -->
+    <section id="problemas" class="py-20 bg-white">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl md:text-4xl font-bold text-center mb-16">Los desafíos del pianista moderno</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
+                <div class="bg-gray-50 p-6 rounded-lg shadow-md hover:shadow-lg transition duration-300 text-center">
+                    <div class="text-red-600 text-4xl mb-4"><i class="fas fa-folder-open"></i></div>
+                    <h3 class="text-xl font-semibold mb-3">Desorganización del repertorio</h3>
+                    <p class="text-gray-600">Perder tiempo buscando partituras o olvidándose de piezas importantes.</p>
+                </div>
+                
+                <div class="bg-gray-50 p-6 rounded-lg shadow-md hover:shadow-lg transition duration-300 text-center">
+                    <div class="text-red-600 text-4xl mb-4"><i class="fas fa-chart-bar"></i></div>
+                    <h3 class="text-xl font-semibold mb-3">Falta de análisis técnico</h3>
+                    <p class="text-gray-600">No saber cómo identificar áreas débiles en sus interpretaciones.</p>
+                </div>
+                
+                <div class="bg-gray-50 p-6 rounded-lg shadow-md hover:shadow-lg transition duration-300 text-center">
+                    <div class="text-red-600 text-4xl mb-4"><i class="fas fa-calendar-alt"></i></div>
+                    <h3 class="text-xl font-semibold mb-3">Práctica sin planificación</h3>
+                    <p class="text-gray-600">Practicar sin un enfoque claro, lo que puede llevar a resultados inconsistentes.</p>
+                </div>
+                
+                <div class="bg-gray-50 p-6 rounded-lg shadow-md hover:shadow-lg transition duration-300 text-center">
+                    <div class="text-red-600 text-4xl mb-4"><i class="fas fa-comments"></i></div>
+                    <h3 class="text-xl font-semibold mb-3">Falta de feedback personalizado</h3>
+                    <p class="text-gray-600">No recibir ejercicios técnicos adaptados a su nivel y necesidades.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Soluciones -->
+    <section id="soluciones" class="py-20 bg-gray-100 bg-cover bg-center relative" style="background-image: url('{% static 'img/features-banner.jpg' %}');">
+        <div class="absolute inset-0 bg-black bg-opacity-50"></div> <!-- Overlay para mejorar la legibilidad -->
+        <div class="container mx-auto px-4 relative z-10"> <!-- Contenido sobre el overlay -->
+            <h2 class="text-3xl md:text-4xl font-bold text-center text-white mb-16">LIED: La solución integral para pianistas</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Función 1: Organiza tu repertorio -->
+                <div class="bg-white bg-opacity-90 p-8 rounded-lg shadow-md hover:shadow-lg transition duration-300 text-center">
+                    <h3 class="text-xl font-semibold mb-3">Organiza tu repertorio de manera eficiente</h3>
+                    <p class="text-gray-600 mb-3">Gestiona todas tus partituras en un solo lugar, con etiquetas y categorías personalizadas.</p>
+                    <p class="text-gray-500 italic">"Crea listas de reproducción según eventos, niveles de dificultad o géneros musicales."</p>
+                </div>
+
+                <!-- Función 2: Analiza tus partituras -->
+                <div class="bg-white bg-opacity-90 p-8 rounded-lg shadow-md hover:shadow-lg transition duration-300 text-center">
+                    <h3 class="text-xl font-semibold mb-3">Analiza tus partituras con precisión</h3>
+                    <p class="text-gray-600 mb-3">Extrae información clave de tus partituras en formato MusicXML, como tonalidad, compás y estructura armónica.</p>
+                    <p class="text-gray-500 italic">"Identifica rápidamente las secciones más complejas de una obra para enfocarte en ellas."</p>
+                </div>
+
+                <!-- Función 3: Planifica sesiones de práctica -->
+                <div class="bg-white bg-opacity-90 p-8 rounded-lg shadow-md hover:shadow-lg transition duration-300 text-center">
+                    <h3 class="text-xl font-semibold mb-3">Planifica sesiones de práctica optimizadas</h3>
+                    <p class="text-gray-600 mb-3">Recibe sugerencias personalizadas para distribuir tu tiempo entre nuevas piezas y repertorio existente.</p>
+                    <p class="text-gray-500 italic">"El sistema te ayuda a equilibrar la práctica de técnica con la interpretación artística."</p>
+                </div>
+
+                <!-- Función 4: Mejora tu técnica -->
+                <div class="bg-white bg-opacity-90 p-8 rounded-lg shadow-md hover:shadow-lg transition duration-300 text-center">
+                    <h3 class="text-xl font-semibold mb-3">Mejora tu técnica con ejercicios personalizados</h3>
+                    <p class="text-gray-600 mb-3">Genera ejercicios técnicos basados en las debilidades detectadas en tus partituras.</p>
+                    <p class="text-gray-500 italic">"Practica escalas, arpegios y pasajes difíciles específicamente diseñados para tus necesidades."</p>
+                </div>
+
+                <!-- Función 5: Visualiza tu progreso -->
+                <div class="bg-white bg-opacity-90 p-8 rounded-lg shadow-md hover:shadow-lg transition duration-300 text-center">
+                    <h3 class="text-xl font-semibold mb-3">Visualiza tu progreso de forma clara</h3>
+                    <p class="text-gray-600 mb-3">Utiliza un mapa visual de dominio para ver cuánto has avanzado en cada pieza.</p>
+                    <p class="text-gray-500 italic">"Filtra por nivel de dominio, técnica o género para identificar áreas de mejora."</p>
+                </div>
+
+                <!-- Función 6: Practica con acompañamiento auditivo -->
+                <div class="bg-white bg-opacity-90 p-8 rounded-lg shadow-md hover:shadow-lg transition duration-300 text-center">
+                    <h3 class="text-xl font-semibold mb-3">Practica con acompañamiento auditivo</h3>
+                    <p class="text-gray-600 mb-3">Reproduce archivos MIDI para escuchar cómo suena tu música mientras la tocas.</p>
+                    <p class="text-gray-500 italic">"Acompáñate con un piano virtual o instrumentos adicionales para mejorar tu interpretación."</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Beneficios -->
+    <section id="beneficios" class="py-20 bg-white">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl md:text-4xl font-bold text-center mb-16">Por qué LIED es diferente</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
+                <div class="bg-gray-50 p-6 rounded-lg shadow-md hover:shadow-lg transition duration-300 text-center">
+                    <div class="text-red-600 text-4xl mb-4"><i class="fas fa-lock"></i></div>
+                    <h3 class="text-xl font-semibold mb-3">Accesibilidad</h3>
+                    <p class="text-gray-600">Ejecutable localmente, sin depender de servicios en la nube.</p>
+                </div>
+                
+                <div class="bg-gray-50 p-6 rounded-lg shadow-md hover:shadow-lg transition duration-300 text-center">
+                    <div class="text-red-600 text-4xl mb-4"><i class="fas fa-shield-alt"></i></div>
+                    <h3 class="text-xl font-semibold mb-3">Privacidad</h3>
+                    <p class="text-gray-600">Tus datos permanecen seguros y bajo tu control.</p>
+                </div>
+                
+                <div class="bg-gray-50 p-6 rounded-lg shadow-md hover:shadow-lg transition duration-300 text-center">
+                    <div class="text-red-600 text-4xl mb-4"><i class="fas fa-user-cog"></i></div>
+                    <h3 class="text-xl font-semibold mb-3">Personalización</h3>
+                    <p class="text-gray-600">Diseñado específicamente para las necesidades de los pianistas.</p>
+                </div>
+                
+                <div class="bg-gray-50 p-6 rounded-lg shadow-md hover:shadow-lg transition duration-300 text-center">
+                    <div class="text-red-600 text-4xl mb-4"><i class="fas fa-gift"></i></div>
+                    <h3 class="text-xl font-semibold mb-3">Gratuito y de código abierto</h3>
+                    <p class="text-gray-600">Disponible para todos los músicos, sin costos ocultos.</p>
+                </div>
+                
+                <div class="bg-gray-50 p-6 rounded-lg shadow-md hover:shadow-lg transition duration-300 text-center">
+                    <div class="text-red-600 text-4xl mb-4"><i class="fas fa-box-open"></i></div>
+                    <h3 class="text-xl font-semibold mb-3">Herramienta completa</h3>
+                    <p class="text-gray-600">Combina gestión, análisis, planificación y práctica en una sola plataforma.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="py-24 bg-cover bg-center relative min-h-[30rem]" style="background-image: url('{% static 'img/keys.jpg' %}');">
+        <div class="absolute inset-0 bg-black bg-opacity-60"></div>
+        <div class="relative container mx-auto px-4 text-center text-white flex flex-col justify-center items-center h-full">
+            <h2 class="text-3xl md:text-4xl font-bold mb-6">¿Listo para potenciar tu interpretación musical?</h2>
+            <p class="text-xl mb-8 max-w-3xl mx-auto">LIED no solo te ayuda a organizar tu repertorio y analizar tus partituras, sino que también te proporciona las herramientas necesarias para mejorar tu técnica y rendimiento.</p>
+        </div>
+    </section>
+
+    <!-- Información adicional -->
+    <section class="py-20 bg-white">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl md:text-4xl font-bold text-center mb-16">Más razones para elegir LIED</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="text-center">
+                    <div class="text-red-600 text-4xl mb-4"><i class="fas fa-microchip"></i></div>
+                    <h3 class="text-xl font-semibold mb-3">Tecnología de vanguardia</h3>
+                    <p class="text-gray-600">Desarrollado con tecnologías modernas como Django, Music21 y MIDI.js.</p>
+                </div>
+                
+                <div class="text-center">
+                    <div class="text-red-600 text-4xl mb-4"><i class="fas fa-users"></i></div>
+                    <h3 class="text-xl font-semibold mb-3">Comunidad activa</h3>
+                    <p class="text-gray-600">Participa en nuestra comunidad de usuarios para obtener ayuda y compartir experiencias.</p>
+                </div>
+                
+                <div class="text-center">
+                    <div class="text-red-600 text-4xl mb-4"><i class="fas fa-sync-alt"></i></div>
+                    <h3 class="text-xl font-semibold mb-3">Actualizaciones constantes</h3>
+                    <p class="text-gray-600">Mantenemos LIED actualizado con nuevas funciones y mejoras continuas.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-black text-white py-12">
+        <div class="container mx-auto px-4 text-center">
+            <div class="text-3xl font-bold text-red-600 mb-4">LIED</div>
+            <p class="mb-6">© 2025 LIED. Todos los derechos reservados.</p>
+            <nav class="flex justify-center space-x-6">
+                <a href="{% url 'privacidad' %}" class="hover:text-red-600">
+                    Privacidad
+                </a>
+                <a href="{% url 'terminos' %}" class="hover:text-red-600">
+                    Términos
+                </a>
+                <a href="{% url 'contacto' %}" class="hover:text-red-600">
+                    Contacto
+                </a>
+            </nav>
+        </div>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Análisis Detallado - LIED</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    {% load static %}  
+    <link href="{% static 'css/repertoire/detailed_analysis.css' %}" rel="stylesheet">
+</head>
+<body class="bg-gray-50">
+    <!-- Header -->
+    <header class="bg-black shadow-sm sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+            <a href="{% url 'home' %}" class="text-3xl font-bold text-red-600 hover:text-red-700 transition-colors">
+                LIED
+            </a>
+            <nav class="flex items-center space-x-6">
+                <!-- Enlace 'Mis Partituras' con texto blanco -->
+                <a href="{% url 'lista_piezas' %}" class="text-white hover:text-red-600 flex items-center">
+                    Mis Partituras
+                </a>
+                <form action="{% url 'logout' %}" method="post">
+                    {% csrf_token %}
+                    <!-- Botón 'Cerrar Sesión' con texto blanco -->
+                    <button type="submit" class="text-white hover:text-red-600 flex items-center">
+                        Cerrar Sesión
+                    </button>
+                </form>
+            </nav>
+        </div>
+    </header>
+
+
+    <!-- Contenido Principal -->
+    <main class="container mx-auto px-4 py-8">
+        <!-- Encabezado de la Pieza -->
+        <div class="bg-white rounded-xl shadow-lg p-6 mb-8 relative">
+            <h1 class="text-4xl font-bold text-gray-800 mb-2">
+                {{ pieza.titulo|default:"Título no disponible" }}
+            </h1>
+            <div class="flex items-center space-x-4 text-gray-600">
+                <p class="text-xl">
+                    {{ pieza.compositor|default:"Compositor desconocido" }}
+                </p>
+            </div>
+        </div>
+
+        <!-- Tarjetas de Análisis -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+            <!-- Tonalidad -->
+            <div class="bg-white rounded-xl shadow-lg p-6 transform transition hover:scale-105 hover:shadow-xl">
+                <h3 class="text-sm font-semibold text-gray-500 mb-3 uppercase tracking-wider">
+                    Tonalidad Principal
+                </h3>
+                <div class="bg-gradient-to-br from-purple-500 to-purple-600 text-white text-lg font-bold px-4 py-2 rounded-xl shadow-sm flex items-center justify-center w-fit">
+                    {{ analisis.tonalidad_principal | default:"N/A" }}
+                </div>
+            </div>
+
+            <!-- Compás Predominante -->
+            <div class="bg-white rounded-xl shadow-lg p-6 transform transition hover:scale-105 hover:shadow-xl">
+                <h3 class="text-sm font-semibold text-gray-500 mb-3 uppercase tracking-wider">
+                    Compás Predominante
+                </h3>
+                <p class="text-3xl font-bold text-gray-800 text-center" id="main-time-signature">
+                    {{ analisis.compas_principal | default:"4/4" }}
+                </p>
+            </div>
+
+            <!-- Cambios de Compás -->
+            <div class="bg-white rounded-xl shadow-lg p-6 transform transition hover:scale-105 hover:shadow-xl">
+                <h3 class="text-sm font-semibold text-gray-500 mb-3 uppercase tracking-wider">
+                    Cambios de Compás
+                </h3>
+                <div class="flex flex-wrap gap-3 items-center justify-center">
+                    {% if analisis.cambios_compas %}
+                        {% for compas in analisis.cambios_compas %}
+                            <span class="bg-gradient-to-br from-blue-50 to-blue-100 text-blue-800 text-lg font-bold px-4 py-2 rounded-xl border border-blue-200 shadow-sm flex items-center justify-center min-w-[70px]">
+                                {{ compas }}
+                            </span>
+                        {% endfor %}
+                    {% else %}
+                        <div class="flex items-center text-gray-400">
+                            <i class="fas fa-check-circle mr-2"></i>
+                            <span class="italic">Compás constante</span>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Sección de Pedalización -->
+        <div class="bg-white rounded-xl shadow-lg p-6">
+            <h3 class="text-xl font-semibold mb-4">
+                <i class="fas fa-pedal-board mr-2 text-indigo-500"></i>Análisis de Pedalización
+            </h3>
+            
+            {% if analisis.pedalizacion.total_eventos > 0 %}
+                <!-- Cuando SÍ hay pedalización -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                    <div class="text-center bg-blue-50 p-4 rounded-lg">
+                        <p class="text-2xl font-bold text-blue-600">{{ analisis.pedalizacion.frecuencia|title }}</p>
+                        <p class="text-sm text-gray-600">Frecuencia de uso</p>
+                    </div>
+                    <div class="text-center bg-purple-50 p-4 rounded-lg">
+                        <p class="text-2xl font-bold text-purple-600">{{ analisis.pedalizacion.tipo|title }}</p>
+                        <p class="text-sm text-gray-600">Tipo principal</p>
+                    </div>
+                    <div class="text-center bg-amber-50 p-4 rounded-lg">
+                        <p class="text-2xl font-bold text-amber-600">{{ analisis.pedalizacion.estilo_uso|title }}</p>
+                        <p class="text-sm text-gray-600">Estilo característico</p>
+                    </div>
+                </div>
+                
+                <div class="bg-gray-50 p-4 rounded-lg mb-4">
+                    <h4 class="font-semibold text-gray-700 mb-2">Estadísticas</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
+                        <div class="flex justify-between items-center">
+                            <span class="font-medium">Cambios de pedal:</span>
+                            <span class="font-bold">{{ analisis.pedalizacion.total_eventos }}</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="font-medium">Compases con pedal:</span>
+                            <span class="font-bold">
+                                {{ analisis.pedalizacion.compases_con_pedal }} de {{ analisis.pedalizacion.total_compases }}
+                                <span class="text-blue-600 ml-1">({{ analisis.pedalizacion.porcentaje_uso|floatformat:1 }}%)</span>
+                            </span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="font-medium">Cambios frecuentes:</span>
+                            <span class="font-semibold">
+                                {% if analisis.pedalizacion.cambios_frecuentes == 'muy frecuentes' or analisis.pedalizacion.cambios_frecuentes == 'frecuentes' %}
+                                    <i class="fas fa-check-circle text-green-500 mr-1"></i>Sí
+                                {% else %}
+                                    <i class="fas fa-times-circle text-red-500 mr-1"></i>No
+                                {% endif %}
+                            </span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="font-medium">Pedal sostenuto:</span>
+                            <span class="font-semibold">
+                                {% if analisis.pedalizacion.sostenuto_presente %}
+                                    <i class="fas fa-check-circle text-green-500 mr-1"></i>Presente
+                                {% else %}
+                                    <i class="fas fa-times-circle text-red-500 mr-1"></i>No usado
+                                {% endif %}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-indigo-50 p-4 rounded-lg border-l-4 border-indigo-400">
+                    <div class="flex items-start">
+                        <i class="fas fa-info-circle text-indigo-500 mt-1 mr-3"></i>
+                        <div>
+                            <h4 class="font-semibold text-indigo-800 mb-1">Interpretación del estilo</h4>
+                            <p class="text-sm text-gray-700 leading-relaxed">
+                                {% if analisis.pedalizacion.estilo_uso == 'legato' %}
+                                    <span class="font-medium">Estilo Legato:</span> Uso muy frecuente del pedal (más de 1.5 cambios por compás), característico de pasajes líricos o piezas románticas tardías, buscando una sonoridad conectada.
+                                {% elif analisis.pedalizacion.estilo_uso == 'resonancia' %}
+                                    <span class="font-medium">Estilo Resonancia:</span> Pedal sostenido en más del 60% de los compases, típico de música impresionista o pasajes atmosféricos.
+                                {% elif analisis.pedalizacion.estilo_uso == 'articulado' %}
+                                    <span class="font-medium">Estilo Articulado:</span> Cambios frecuentes (más de 0.8 por compás) pero precisos, propio de música clásica temprana o pasajes con articulación clara.
+                                {% else %}
+                                    <span class="font-medium">Estilo Estándar:</span> Uso convencional del pedal, con cambios moderados y adecuados a prácticas comunes.
+                                {% endif %}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+            {% else %}
+                <!-- Cuando NO hay pedalización -->
+                <div class="text-center py-8 text-gray-400">
+                    <div class="inline-block bg-gray-100 p-4 rounded-full mb-3">
+                        <i class="fas fa-pedal-bike text-3xl"></i>
+                    </div>
+                    <p class="text-lg font-medium mb-1">No se detectó uso de pedal</p>
+                    <p class="text-sm max-w-md mx-auto">El análisis no encontró marcas de pedalización en la partitura. Esto puede indicar una pieza barroca, clásica temprana o que no se especificaron los pedales explícitamente.</p>
+                </div>
+            {% endif %}
+        </div>
+
+
+        <!-- Sección de Modulaciones - Versión Mejorada -->
+        <div class="bg-white rounded-xl shadow-lg p-6 mt-8">
+            <h3 class="text-xl font-semibold mb-4 flex items-center">
+                Análisis de Modulaciones Armónicas
+            </h3>
+            
+            {% if analisis.modulaciones %}
+                <div class="space-y-4">
+                    {% for mod in analisis.modulaciones %}
+                    <div class="exercise-card bg-gray-50 rounded-lg p-4 hover:shadow-md transition border-l-4 border-blue-500">
+                        <!-- Cabecera con compás -->
+                        <div class="flex justify-between items-center mb-3">
+                            <div class="flex items-center space-x-3">
+                                <span class="bg-blue-600 text-white px-3 py-1 rounded-full text-sm font-medium">
+                                    Compás {{ mod.compas_inicio }}
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Tonalidades -->
+                        <div class="grid grid-cols-2 gap-3 text-sm mb-3">
+                            <div class="flex items-start">
+                                <span class="w-20 font-medium text-gray-700">De:</span>
+                                <span class="bg-red-50 text-red-800 px-3 py-1 rounded border border-red-200">
+                                    {{ mod.tonalidad_anterior }}
+                                </span>
+                            </div>
+                            <div class="flex items-start">
+                                <span class="w-20 font-medium text-gray-700">A:</span>
+                                <span class="bg-green-50 text-green-800 px-3 py-1 rounded border border-green-200">
+                                    {{ mod.nueva_tonalidad }}
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Transición con explicación -->
+                        {% if mod.transicion %}
+                        <div class="mt-3 space-y-2">
+                            <div class="flex items-start">
+                                <span class="w-20 font-medium text-gray-700">Intervalo:</span>
+                                <div class="flex-1">
+                                    <span class="bg-purple-50 text-purple-800 px-3 py-1 rounded border border-purple-200 inline-flex items-center">
+                                        <span class="mr-1">{{ mod.transicion.nombre }}</span>
+                                        <span class="text-xs bg-purple-100 rounded-full px-2 py-0.5 ml-1">
+                                            {{ mod.transicion.semitono }} st {{ mod.transicion.direccion }}
+                                        </span>
+                                    </span>
+                                    
+                                    <!-- Explicación dinámica mejorada -->
+                                    {% with trans=mod.transicion.nombre|lower dir=mod.transicion.direccion %}
+                                    <p class="text-xs text-gray-600 mt-2 pl-2 border-l-2 border-gray-300">
+                                        {% if "quinta justa" in trans and dir == "↑" %}
+                                        <i class="fas fa-info-circle mr-1 text-blue-500"></i>
+                                        Modulación clásica al <strong>dominante</strong>, creando tensión armónica.
+                                        {% elif "quinta justa" in trans and dir == "↓" %}
+                                        <i class="fas fa-info-circle mr-1 text-green-500"></i>
+                                        Retorno a la <strong>tónica</strong>, resolviendo la tensión musical.
+                                        {% elif "tercera menor" in trans or "tercera mayor" in trans %}
+                                        <i class="fas fa-info-circle mr-1 text-purple-500"></i>
+                                        Relación entre tonalidades <strong>relativas</strong> o por terceras.
+                                        {% elif "segunda mayor" in trans or "segunda menor" in trans %}
+                                        <i class="fas fa-info-circle mr-1 text-yellow-500"></i>
+                                        Progresión por <strong>grado conjunto</strong>, movimiento suave.
+                                        {% elif "unísono" in trans %}
+                                        <i class="fas fa-info-circle mr-1 text-gray-500"></i>
+                                        Cambio de <strong>modo</strong> (mayor/menor) manteniendo la misma tónica.
+                                        {% elif "disminuida" in trans %}
+                                        <i class="fas fa-info-circle mr-1 text-red-500"></i>
+                                        Relación <strong>enarmónica</strong> o modulación cromática.
+                                        {% elif "cuarta justa" in trans %}
+                                        <i class="fas fa-info-circle mr-1 text-indigo-500"></i>
+                                        Relación de <strong>subdominante</strong> en la armonía.
+                                        {% else %}
+                                        <i class="fas fa-info-circle mr-1 text-gray-500"></i>
+                                        Modulación con característica armónica particular.
+                                        {% endif %}
+                                        
+                                        {% if "disminuida" in trans and "segunda" in trans and mod.transicion.semitono == "0" %}
+                                        <br>Nota: Esta es una relación enarmónica (ej. G♯/A♭).
+                                        {% endif %}
+                                    </p>
+                                    {% endwith %}
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <!-- Estado cuando no hay modulaciones -->
+                <div class="text-center py-8 text-gray-400">
+                    <i class="fas fa-exchange-alt text-5xl mb-4 opacity-20"></i>
+                    <h4 class="text-lg font-medium text-gray-500">No se detectaron modulaciones</h4>
+                    <p class="text-sm mt-1 max-w-md mx-auto">
+                        La pieza mantiene una tonalidad estable sin cambios significativos,
+                        o el análisis no encontró patrones claros de modulación.
+                    </p>
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- Sección de Coordinación entre Manos - Versión Mejorada -->
+        <div class="bg-white rounded-xl shadow-lg p-6 mt-8">
+            <h3 class="text-xl font-semibold mb-4 flex items-center">
+                Coordinación entre Manos
+            </h3>
+            
+            {% if analisis.coordinacion_manos %}
+                <div class="space-y-6">
+                    <!-- Tarjeta de Análisis Rítmico -->
+                    <div class="exercise-card bg-gray-50 rounded-lg p-4 hover:shadow-md transition border-l-4 border-blue-500">
+                        <h4 class="font-semibold text-gray-700 mb-3 flex items-center">
+                            Análisis Rítmico
+                        </h4>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <!-- Figuras predominantes -->
+                            <div class="mb-3">
+                                <p class="font-medium text-gray-600 mb-2">Figuras rítmicas principales:</p>
+                                <div class="space-y-3">
+                                    <div class="bg-blue-50 p-3 rounded-lg">
+                                        <p class="text-xs text-blue-600 font-medium mb-1">Mano derecha</p>
+                                        <p class="font-semibold">
+                                            {% for figura in analisis.coordinacion_manos.ritmo.figuras_primarias.derecha %}
+                                                <span class="bg-white px-2 py-1 rounded mr-1 mb-1 inline-block text-sm shadow-sm">{{ figura }}</span>
+                                            {% empty %}
+                                                <span class="text-gray-400 italic">No se detectaron figuras</span>
+                                            {% endfor %}
+                                        </p>
+                                    </div>
+                                    <div class="bg-green-50 p-3 rounded-lg">
+                                        <p class="text-xs text-green-600 font-medium mb-1">Mano izquierda</p>
+                                        <p class="font-semibold">
+                                            {% for figura in analisis.coordinacion_manos.ritmo.figuras_primarias.izquierda %}
+                                                <span class="bg-white px-2 py-1 rounded mr-1 mb-1 inline-block text-sm shadow-sm">{{ figura }}</span>
+                                            {% empty %}
+                                                <span class="text-gray-400 italic">No se detectaron figuras</span>
+                                            {% endfor %}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Sincopas -->
+                            <div class="mb-3">
+                                <p class="font-medium text-gray-600 mb-2">Sincopas identificadas:</p>
+                                <div class="flex items-center justify-between bg-amber-50 p-3 rounded-lg">
+                                    <div>
+                                        <div class="flex items-baseline">
+                                            <p class="text-2xl font-bold text-amber-600 mr-2">
+                                                {{ analisis.coordinacion_manos.ritmo.sincopas.total }}
+                                            </p>
+                                            <p class="text-sm text-amber-500">
+                                                {% if analisis.coordinacion_manos.ritmo.sincopas.frecuencia == 'alta' %}
+                                                    Frecuencia alta
+                                                {% elif analisis.coordinacion_manos.ritmo.sincopas.frecuencia == 'media' %}
+                                                    Frecuencia media
+                                                {% else %}
+                                                    Poca frecuencia
+                                                {% endif %}
+                                            </p>
+                                        </div>
+                                        {% if analisis.coordinacion_manos.ritmo.sincopas.ubicacion %}
+                                        <p class="text-xs text-amber-600 mt-1">
+                                            En compases: 
+                                            {% for compas in analisis.coordinacion_manos.ritmo.sincopas.ubicacion|slice:":3" %}
+                                                {{ compas }}{% if not forloop.last %}, {% endif %}
+                                            {% endfor %}
+                                            {% if analisis.coordinacion_manos.ritmo.sincopas.ubicacion|length > 3 %}...{% endif %}
+                                        </p>
+                                        {% endif %}
+                                    </div>
+                                    
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Grupos rítmicos -->
+                        <div class="mt-4">
+                            <p class="font-medium text-gray-600 mb-2">Patrones rítmicos recurrentes:</p>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div class="bg-blue-50 p-3 rounded-lg">
+                                    <p class="text-xs text-blue-600 font-medium mb-1">Derecha</p>
+                                    <div class="space-y-2">
+                                        {% for grupo in analisis.coordinacion_manos.ritmo.grupos_ritmicos.derecha|slice:":3" %}
+                                            <div class="bg-white p-2 rounded">
+                                                <p class="font-medium text-sm">{{ grupo.patron.0 }} + {{ grupo.patron.1 }}</p>
+                                                <p class="text-xs text-gray-500">
+                                                    {{ grupo.frecuencia }} aparicion{{ grupo.frecuencia|pluralize:"es" }}
+                                                </p>
+                                            </div>
+                                        {% empty %}
+                                            <span class="text-gray-400 italic">No se detectaron patrones</span>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                                <div class="bg-green-50 p-3 rounded-lg">
+                                    <p class="text-xs text-green-600 font-medium mb-1">Izquierda</p>
+                                    <div class="space-y-2">
+                                        {% for grupo in analisis.coordinacion_manos.ritmo.grupos_ritmicos.izquierda|slice:":3" %}
+                                            <div class="bg-white p-2 rounded">
+                                                <p class="font-medium text-sm">{{ grupo.patron.0 }} + {{ grupo.patron.1 }}</p>
+                                                <p class="text-xs text-gray-500">
+                                                    {{ grupo.frecuencia }} aparicion{{ grupo.frecuencia|pluralize:"es" }}
+                                                </p>
+                                            </div>
+                                        {% empty %}
+                                            <span class="text-gray-400 italic">No se detectaron patrones</span>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Polirritmos -->
+                        {% if analisis.coordinacion_manos.ritmo.polirritmos %}
+                        <div class="mt-4">
+                            <p class="font-medium text-gray-600 mb-2">Patrones Polirrítmicos:</p>
+                            <div class="space-y-2">
+                                {% for relacion in analisis.coordinacion_manos.ritmo.polirritmos %}
+                                <div class="bg-purple-50 p-3 rounded-lg">
+                                    <div class="flex flex-wrap items-center gap-2">
+                                        <span class="bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-sm font-medium">
+                                            {{ relacion }}
+                                        </span>
+                                        <span class="text-sm text-gray-700">
+                                            {% for key, value in analisis.coordinacion_manos.ritmo.polirritmos_detalle.explicaciones.items %}
+                                                {% if key == relacion %}{{ value }}{% endif %}
+                                            {% endfor %}
+                                        </span>
+                                    </div>
+                                    <div class="text-xs text-gray-500 mt-1">
+                                        <span class="font-medium">Compases:</span>
+                                        {% for key, value in analisis.coordinacion_manos.ritmo.polirritmos_detalle.ejemplos.items %}
+                                            {% if key == relacion and value %}
+                                                {% for compas in value|slice:":3" %}
+                                                    {{ compas }}{% if not forloop.last %}, {% endif %}
+                                                {% endfor %}
+                                                {% if value|length > 3 %}... ({{ value|length }} total){% endif %}
+                                            {% elif key == relacion %}
+                                                -
+                                            {% endif %}
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Tarjeta de Técnica Interpretativa -->
+                    <div class="exercise-card bg-gray-50 rounded-lg p-4 hover:shadow-md transition border-l-4 border-green-500">
+                        <h4 class="font-semibold text-gray-700 mb-3 flex items-center">
+                             Técnica Interpretativa
+                        </h4>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <!-- Saltos -->
+                            <div>
+                                <p class="font-medium text-gray-600 mb-2">Saltos significativos (>8 semitonos):</p>
+                                <div class="space-y-3">
+                                    <div class="bg-red-50 p-3 rounded-lg">
+                                        <p class="text-xs text-red-600 font-medium mb-1">Mano derecha</p>
+                                        <div class="space-y-1">
+                                            <p class="font-bold text-xl">
+                                                {{ analisis.coordinacion_manos.tecnica.saltos.derecha.max_semitonos }} semitonos
+                                            </p>
+                                            <p class="text-sm text-red-700">
+                                                {{ analisis.coordinacion_manos.tecnica.saltos.derecha.intervalo }}
+                                            </p>
+                                            <p class="text-xs text-gray-500">
+                                                {{ analisis.coordinacion_manos.tecnica.saltos.derecha.frecuencia }} salto{{ analisis.coordinacion_manos.tecnica.saltos.derecha.frecuencia|pluralize }} significativo{{ analisis.coordinacion_manos.tecnica.saltos.derecha.frecuencia|pluralize }}
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div class="bg-indigo-50 p-3 rounded-lg">
+                                        <p class="text-xs text-indigo-600 font-medium mb-1">Mano izquierda</p>
+                                        <div class="space-y-1">
+                                            <p class="font-bold text-xl">
+                                                {{ analisis.coordinacion_manos.tecnica.saltos.izquierda.max_semitonos }} semitonos
+                                            </p>
+                                            <p class="text-sm text-indigo-700">
+                                                {{ analisis.coordinacion_manos.tecnica.saltos.izquierda.intervalo }}
+                                            </p>
+                                            <p class="text-xs text-gray-500">
+                                                {{ analisis.coordinacion_manos.tecnica.saltos.izquierda.frecuencia }} salto{{ analisis.coordinacion_manos.tecnica.saltos.izquierda.frecuencia|pluralize }} significativo{{ analisis.coordinacion_manos.tecnica.saltos.izquierda.frecuencia|pluralize }}
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Articulaciones -->
+                            <div>
+                                <p class="font-medium text-gray-600 mb-2">Técnicas de articulación:</p>
+                                <div class="space-y-3">
+                                    <div class="bg-green-50 p-3 rounded-lg">
+                                        <p class="text-xs text-green-600 font-medium mb-1">Legato</p>
+                                        <div class="space-y-1">
+                                            <p class="font-bold text-xl">
+                                                {{ analisis.coordinacion_manos.tecnica.articulaciones.legato.total }}
+                                            </p>
+                                            <p class="text-sm text-green-700">
+                                                En {{ analisis.coordinacion_manos.tecnica.articulaciones.legato.porcentaje }}% de las notas
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div class="bg-blue-50 p-3 rounded-lg">
+                                        <p class="text-xs text-blue-600 font-medium mb-1">Staccato</p>
+                                        <div class="space-y-1">
+                                            <p class="font-bold text-xl">
+                                                {{ analisis.coordinacion_manos.tecnica.articulaciones.staccato.total }}
+                                            </p>
+                                            <p class="text-sm text-blue-700">
+                                                En {{ analisis.coordinacion_manos.tecnica.articulaciones.staccato.porcentaje }}% de las notas
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Tarjeta de Estructura -->
+                    <div class="exercise-card bg-gray-50 rounded-lg p-4 hover:shadow-md transition border-l-4 border-purple-500">
+                        <h4 class="font-semibold text-gray-700 mb-3 flex items-center">
+                           Estructura de la Pieza
+                        </h4>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <!-- Densidad -->
+                            <div>
+                                <p class="font-medium text-gray-600 mb-2">Densidad de notas:</p>
+                                <div class="bg-purple-50 p-3 rounded-lg">
+                                    <div class="space-y-2">
+                                        <div>
+                                            <p class="text-xs text-purple-600 font-medium">Máxima densidad</p>
+                                            <p class="font-bold">
+                                                {{ analisis.coordinacion_manos.estructura.densidad.maxima.notas }} notas
+                                                <span class="text-sm font-normal text-purple-600">
+                                                    (compás {{ analisis.coordinacion_manos.estructura.densidad.maxima.compas }})
+                                                </span>
+                                            </p>
+                                        </div>
+                                        <div>
+                                            <p class="text-xs text-purple-600 font-medium">Densidad promedio</p>
+                                            <p class="font-bold">
+                                                {{ analisis.coordinacion_manos.estructura.densidad.promedio }} notas/compás
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Proporción -->
+                            <div>
+                                <p class="font-medium text-gray-600 mb-2">Distribución entre manos:</p>
+                                <div class="bg-gradient-to-r from-blue-50 to-green-50 p-3 rounded-lg">
+                                    <div class="grid grid-cols-2 gap-4 mb-2">
+                                        <div class="text-center">
+                                            <p class="text-xs text-blue-600 font-medium">Notas derecha</p>
+                                            <p class="font-bold text-2xl text-blue-700">
+                                                {{ analisis.coordinacion_manos.estructura.proporcion.derecha }}
+                                            </p>
+                                        </div>
+                                        <div class="text-center">
+                                            <p class="text-xs text-green-600 font-medium">Notas izquierda</p>
+                                            <p class="font-bold text-2xl text-green-700">
+                                                {{ analisis.coordinacion_manos.estructura.proporcion.izquierda }}
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div class="text-center">
+                                        <span class="bg-white px-3 py-1 rounded-full text-sm font-medium shadow-sm">
+                                            Relación {{ analisis.coordinacion_manos.estructura.proporcion.relacion }}
+                                            <span class="text-gray-600">
+                                                ({{ analisis.coordinacion_manos.estructura.proporcion.balance }})
+                                            </span>
+                                        </span>
+                                        {% if analisis.coordinacion_manos.estructura.proporcion.explicacion %}
+                                        <p class="text-xs text-gray-500 mt-1">
+                                            {{ analisis.coordinacion_manos.estructura.proporcion.explicacion }}
+                                        </p>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Observaciones Técnicas -->
+                    {% if analisis.coordinacion_manos.observaciones %}
+                    <div class="exercise-card bg-blue-50 rounded-lg p-4 hover:shadow-md transition border-l-4 border-blue-700">
+                        <h4 class="font-semibold text-blue-800 mb-2 flex items-center">
+                            Análisis Destacado
+                        </h4>
+                        
+                        <ul class="list-disc pl-5 space-y-2 text-sm text-gray-700">
+                            <!-- Saltos -->
+                            {% if analisis.coordinacion_manos.tecnica.saltos.derecha.max_semitonos > 12 or analisis.coordinacion_manos.tecnica.saltos.izquierda.max_semitonos > 12 %}
+                            <li class="font-medium">
+                                <span class="text-blue-700">Desafíos técnicos:</span>
+                                <ul class="list-circle pl-5 mt-1 space-y-1">
+                                    {% if analisis.coordinacion_manos.tecnica.saltos.derecha.max_semitonos > 12 %}
+                                    <li>Mano derecha: salto de {{ analisis.coordinacion_manos.tecnica.saltos.derecha.max_semitonos }} semitonos ({{ analisis.coordinacion_manos.tecnica.saltos.derecha.intervalo }})</li>
+                                    {% endif %}
+                                    {% if analisis.coordinacion_manos.tecnica.saltos.izquierda.max_semitonos > 12 %}
+                                    <li>Mano izquierda: salto de {{ analisis.coordinacion_manos.tecnica.saltos.izquierda.max_semitonos }} semitonos ({{ analisis.coordinacion_manos.tecnica.saltos.izquierda.intervalo }})</li>
+                                    {% endif %}
+                                </ul>
+                            </li>
+                            {% endif %}
+                            
+                            <!-- Polirritmos -->
+                            {% if analisis.coordinacion_manos.ritmo.polirritmos %}
+                            <li class="font-medium">
+                                <span class="text-blue-700">Patrones rítmicos complejos:</span> 
+                                <span class="font-normal">{{ analisis.coordinacion_manos.ritmo.polirritmos|length }} relaciones polirrítmicas diferentes</span>
+                            </li>
+                            {% endif %}
+                            
+                            <!-- Distribución -->
+                            {% if analisis.coordinacion_manos.estructura.proporcion.balance != "equilibrado" %}
+                            <li class="font-medium">
+                                <span class="text-blue-700">Distribución:</span> 
+                                <span class="font-normal">{{ analisis.coordinacion_manos.estructura.proporcion.explicacion }}</span>
+                            </li>
+                            {% endif %}
+                            
+                            <!-- Sincopas -->
+                            {% if analisis.coordinacion_manos.ritmo.sincopas.total > 0 %}
+                            <li class="font-medium">
+                                <span class="text-blue-700">Sincopas:</span> 
+                                <span class="font-normal">
+                                    {{ analisis.coordinacion_manos.ritmo.sincopas.total }} aparicion{{ analisis.coordinacion_manos.ritmo.sincopas.total|pluralize:"es" }}
+                                    {% if analisis.coordinacion_manos.ritmo.sincopas.frecuencia != 'baja' %}
+                                    (frecuencia {{ analisis.coordinacion_manos.ritmo.sincopas.frecuencia }})
+                                    {% endif %}
+                                </span>
+                            </li>
+                            {% endif %}
+                            
+                            <!-- Articulaciones -->
+                            <li class="font-medium">
+                                <span class="text-blue-700">Articulaciones:</span> 
+                                <span class="font-normal">
+                                    {{ analisis.coordinacion_manos.tecnica.articulaciones.legato.porcentaje }}% legato,
+                                    {{ analisis.coordinacion_manos.tecnica.articulaciones.staccato.porcentaje }}% staccato
+                                </span>
+                            </li>
+                        </ul>
+                    </div>
+                    {% endif %}
+                </div>
+            {% else %}
+                <!-- Estado cuando no hay datos -->
+                <div class="text-center py-8 text-gray-400">
+                    <i class="fas fa-hands-helping text-5xl mb-4 opacity-20"></i>
+                    <h4 class="text-lg font-medium text-gray-500">Análisis no disponible</h4>
+                    <p class="text-sm mt-1 max-w-md mx-auto">
+                        No se pudo realizar el análisis de coordinación entre manos para esta pieza.
+                    </p>
+                </div>
+            {% endif %}
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-black text-white py-12">
+        <div class="container mx-auto px-4 text-center">
+            <div class="text-3xl font-bold text-red-600 mb-4">LIED</div>
+            <p class="mb-6">© 2025 LIED. Todos los derechos reservados.</p>
+            <nav class="flex justify-center space-x-6">
+                <a href="{% url 'privacidad' %}" class="hover:text-red-600">
+                    Privacidad
+                </a>
+                <a href="{% url 'terminos' %}" class="hover:text-red-600">
+                    Términos
+                </a>
+                <a href="{% url 'contacto' %}" class="hover:text-red-600">
+                    Contacto
+                </a>
+            </nav>
+        </div>
+    </footer>
+</body>
+</html>

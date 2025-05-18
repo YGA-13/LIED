@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generar Estudio - LIED</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    {% load static %}
+    <style>
+        .hero-section {
+            background: linear-gradient(rgba(0, 0, 0, 0.7), url('{% static "img/score-bg.jpg" %}');
+            background-size: cover;
+            background-position: center;
+        }
+        .param-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .param-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Header -->
+    <header class="bg-white shadow-sm">
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+            <a href="{% url 'home' %}" class="text-2xl font-bold text-red-600">LIED</a>
+            <nav class="flex items-center space-x-4">
+                <a href="{% url 'detalle_analisis' pieza.id %}" class="text-gray-700 hover:text-red-600">
+                    ← Volver al Análisis
+                </a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <div class="hero-section min-h-[400px] flex items-center">
+        <div class="container mx-auto px-4 text-center">
+            <h1 class="text-4xl font-bold text-white mb-4">Generar Estudio Técnico</h1>
+            <p class="text-xl text-gray-200">Personaliza los parámetros para crear ejercicios adaptados a {{ pieza.titulo }}</p>
+        </div>
+    </div>
+
+    <!-- Formulario -->
+    <main class="container mx-auto px-4 py-12">
+        <div class="max-w-2xl mx-auto bg-white rounded-xl shadow-lg p-8">
+            <form method="post" class="space-y-8">
+                {% csrf_token %}
+                
+                <!-- Nivel -->
+                <div class="space-y-4">
+                    <h3 class="text-lg font-semibold text-gray-800">Nivel de Dificultad</h3>
+                    <div class="grid grid-cols-3 gap-4">
+                        {% for i in "123" %}
+                        <label class="param-card cursor-pointer bg-gray-50 rounded-lg p-4 text-center 
+                                   {% if forloop.counter == 2 %}border-2 border-red-600{% endif %}">
+                            <input type="radio" name="nivel" value="{{ i }}" 
+                                   class="hidden" {% if forloop.counter == 2 %}checked{% endif %}>
+                            <span class="text-2xl font-bold text-gray-800">{{ i }}</span>
+                            <p class="text-sm text-gray-600 mt-1">
+                                {% if forloop.counter == 1 %}Básico{% endif %}
+                                {% if forloop.counter == 2 %}Intermedio{% endif %}
+                                {% if forloop.counter == 3 %}Avanzado{% endif %}
+                            </p>
+                        </label>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- Tempo -->
+                <div class="space-y-4">
+                    <h3 class="text-lg font-semibold text-gray-800">Configuración de Tempo</h3>
+                    <div class="bg-gray-50 rounded-lg p-4">
+                        <div class="flex items-center space-x-4">
+                            <input type="range" name="tempo" min="40" max="200" value="100" 
+                                   class="flex-1 range-slider">
+                            <span class="text-xl font-bold text-red-600 w-24" id="tempo-display">100 BPM</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Enfoque -->
+                <div class="space-y-4">
+                    <h3 class="text-lg font-semibold text-gray-800">Enfoque Técnico</h3>
+                    <div class="grid grid-cols-2 gap-4">
+                        <label class="param-card cursor-pointer bg-gray-50 rounded-lg p-4">
+                            <input type="radio" name="enfoque" value="escalas" class="hidden" checked>
+                            <div class="text-center">
+                                <div class="text-red-600 text-3xl mb-2">🎼</div>
+                                <h4 class="font-semibold">Escalas y Arpegios</h4>
+                                <p class="text-sm text-gray-600 mt-1">Mejora la digitación y velocidad</p>
+                            </div>
+                        </label>
+                        <label class="param-card cursor-pointer bg-gray-50 rounded-lg p-4">
+                            <input type="radio" name="enfoque" value="saltos" class="hidden">
+                            <div class="text-center">
+                                <div class="text-red-600 text-3xl mb-2">🔄</div>
+                                <h4 class="font-semibold">Saltos y Posiciones</h4>
+                                <p class="text-sm text-gray-600 mt-1">Desarrolla la precisión en saltos</p>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Botón de Envío -->
+                <button type="submit" 
+                        class="w-full bg-red-600 text-white py-4 rounded-xl hover:bg-red-700 
+                               transition-all text-lg font-semibold">
+                    Generar Ejercicio Personalizado
+                </button>
+            </form>
+        </div>
+    </main>
+
+    <!-- Scripts -->
+    <script>
+        // Actualización en tiempo real del tempo
+        const tempoSlider = document.querySelector('.range-slider');
+        const tempoDisplay = document.getElementById('tempo-display');
+        
+        tempoSlider.addEventListener('input', (e) => {
+            tempoDisplay.textContent = `${e.target.value} BPM`;
+        });
+    </script>
+</body>
+</html>

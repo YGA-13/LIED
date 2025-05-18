@@ -1,0 +1,72 @@
+/* Estilos personalizados */
+.background-image {
+    background-image: url('/static/img/piano.jpg');
+    background-size: cover;
+    background-position: left center;
+    background-blend-mode: multiply;
+}
+
+
+
+.page-container {
+    background-color: #f9f9f9;
+    padding: 2rem;
+    font-family: 'Inter', sans-serif;
+    color: #333;
+}
+
+/* Estilos de títulos y textos */
+.page-title {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #d32f2f;
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+.page-text {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    text-align: justify;
+    max-width: 800px;
+    margin: 0 auto;
+    color: #555;
+}
+
+/* Estilos de enlaces */
+.page-link {
+    color: #d32f2f;
+    font-weight: 500;
+    text-decoration: underline;
+}
+
+.page-link:hover {
+    color: #b71c1c;
+}
+
+/* Estilos de contenedor */
+.container-box {
+    background: #fff;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    margin-top: 2rem;
+}
+
+.alert-success {
+    color: green;
+    background-color: #d4edda;
+    border-color: #c3e6cb;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 4px;
+}
+
+.alert-error {
+    color: red;
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 4px;
+}
