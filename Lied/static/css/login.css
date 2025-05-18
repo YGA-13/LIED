@@ -1,0 +1,40 @@
+/* Estilos personalizados */
+.background-image {
+    background-image: url('/static/img/piano.jpg');
+    background-size: cover;
+    background-position: left center;
+    background-blend-mode: multiply;
+}
+
+
+/* Ajustes adicionales para Tailwind */
+.border-red-100 {
+    border-color: #fee2e2;
+}
+
+.focus\:border-red-500:focus {
+    border-color: #ef4444;
+}
+
+.focus\:ring-red-200:focus {
+    --tw-ring-color: rgba(254, 226, 226, 0.5);
+    box-shadow: 0 0 0 3px var(--tw-ring-color);
+}
+
+.alert-success {
+    color: green;
+    background-color: #d4edda;
+    border-color: #c3e6cb;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 4px;
+}
+
+.alert-error {
+    color: red;
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 4px;
+}

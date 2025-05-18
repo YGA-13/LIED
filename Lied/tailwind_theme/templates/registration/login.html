@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - LIED</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/register.css' %}">
+</head>
+<body class="bg-gray-100">
+    
+    <!-- Header -->
+    <header class="bg-black text-white py-4 fixed w-full z-50">
+        <div class="container mx-auto text-center">
+            <a href="/" class="text-3xl font-bold text-red-600">LIED</a>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="min-h-screen flex">
+        <!-- Imagen de fondo -->
+        <div class="hidden md:block w-2/3 background-image"></div>
+        
+        <!-- Login Form -->
+        <section class="w-full md:w-1/3 flex items-center justify-center min-h-screen p-8">
+            <div class="bg-white p-8 rounded-lg shadow-2xl w-full max-w-md border-2 border-red-600 relative -right-10">
+                <div class="text-center mb-6">
+                    <h2 class="text-2xl font-semibold text-gray-900">Iniciar sesión</h2>
+                </div>
+
+                <!-- Mensajes de error o éxito -->
+                {% if messages %}
+                    <div class="alert-messages">
+                        {% for message in messages %}
+                            <div class="alert alert-{{ message.tags }}">
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+                <!-- Formulario de inicio de sesión -->
+                <form action="{% url 'login' %}" method="POST">
+                    {% csrf_token %}
+                    <div class="mb-4">
+                        <label for="username" class="block text-gray-700 font-medium">Nombre de usuario</label>  
+                        <input type="text" id="username" name="username" 
+                               class="w-full p-3 mt-2 border-2 border-red-100 rounded-lg focus:border-red-500 focus:ring-2 focus:ring-red-200" 
+                               required>
+                    </div>
+                    <div class="mb-6">
+                        <label for="password" class="block text-gray-700 font-medium">Contraseña</label>
+                        <input type="password" id="password" name="password" 
+                               class="w-full p-3 mt-2 border-2 border-red-100 rounded-lg focus:border-red-500 focus:ring-2 focus:ring-red-200" 
+                               required>
+                    </div>
+                    
+                    <button type="submit" 
+                            class="w-full bg-red-600 text-white py-3 rounded-lg font-semibold
+                                   hover:bg-red-700 transition-colors duration-300
+                                   transform hover:scale-[1.02] shadow-md">
+                        Iniciar sesión
+                    </button>
+                </form>
+                <div class="text-center mt-4">
+                    <p class="text-gray-700">¿No tienes una cuenta? 
+                        <a href="{% url 'register' %}" class="text-red-600 hover:text-red-800 font-medium">Regístrate aquí</a>
+                    </p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-black text-white py-4">
+        <div class="container mx-auto text-center">
+            <p>© 2025 LIED. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+</body>
+</html>

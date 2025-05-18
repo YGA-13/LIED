@@ -1,0 +1,59 @@
+.page-container {
+    background-color: #f9f9f9;
+    padding: 2rem;
+}
+
+/* Estilos de títulos y textos */
+.page-title {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #d32f2f;
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+.page-text {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    text-align: justify;
+    max-width: 800px;
+    margin: 0 auto;
+    color: #555;
+    background-color: rgba(255, 255, 255, 0.9); /* Fondo semitransparente para mejorar legibilidad */
+    padding: 1.5rem;
+    border-radius: 8px;
+}
+
+/* Estilos de enlaces */
+.page-link {
+    color: #d32f2f;
+    font-weight: 500;
+    text-decoration: underline;
+}
+
+.page-link:hover {
+    color: #b71c1c;
+}
+
+/* Estilos de contenedor */
+.container-box {
+    background: #fff;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    margin-top: 2rem;
+}
+
+/* Ajustes adicionales para Tailwind */
+.border-gray-200 {
+    border-color: #e5e7eb;
+}
+
+.focus\:border-gray-500:focus {
+    border-color: #6b7280;
+}
+
+.focus\:ring-gray-300:focus {
+    --tw-ring-color: rgba(209, 213, 219, 0.5);
+    box-shadow: 0 0 0 3px var(--tw-ring-color);
+}

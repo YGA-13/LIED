@@ -1,0 +1,85 @@
+/* Estilos globales */
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    overflow-x: hidden; /* Evita el scroll horizontal */
+    background-image: url('/static/img/partitura.jpg');
+    background-attachment: fixed;
+    background-size: cover;
+    background-position: center center;
+    font-family: 'Arial', sans-serif; /* Fuente por defecto */
+}
+
+/* Fondo fijo para la sección hero */
+.hero-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('/static/img/partitura.jpg');
+    background-size: cover;
+    background-position: center center;
+    background-attachment: fixed;
+    z-index: -1; /* Asegura que el fondo esté detrás del contenido */
+}
+
+/* Header */
+header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 50; /* Mantener el header por encima del contenido */
+}
+
+/* Hero Section */
+.hero-content {
+    min-height: 70vh; /* Altura mínima de la sección hero */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.4));
+}
+
+.hero-content h1 {
+    font-size: 3rem;
+    font-weight: bold;
+    color: white;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+/* Botón para añadir nueva pieza */
+a.inline-block {
+    font-size: 1.125rem;
+    padding: 0.75rem 2rem;
+    background-color: #e53e3e;
+    color: white;
+    border-radius: 0.75rem;
+    transition: all 0.3s ease-in-out;
+}
+
+a.inline-block:hover {
+    background-color: #dc2626;
+    transform: scale(1.05);
+}
+
+/* Footer */
+footer {
+    background-color: #1a202c;
+    color: white;
+    padding: 2rem 1rem;
+    text-align: center;
+}
+
+footer nav a {
+    margin: 0 1rem;
+    color: #edf2f7;
+    text-decoration: none;
+    transition: color 0.3s ease-in-out;
+}
+
+footer nav a:hover {
+    color: #e53e3e;
+}
