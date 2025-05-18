@@ -45,38 +45,18 @@ Built with modern web tech so it's smooth and fast:
    pip install -r requirements.txt
    ```
 
-3. **Configure frontend**:
-   ```bash
-   cd theme/
-   npm install
-   npm run build
-   cd ..
-   ```
-
-4. **Prepare database**:
+3. **Prepare database**:
    ```bash
    python manage.py migrate
    python manage.py makemigrations
    ```
 
-5. **Run development server**:
+4. **Run development server**:
    ```bash
    python manage.py runserver
    ```
 
 Access at: `http://localhost:8000`
-
-
-### Quick start (alternative)
-
-For a faster setup:
-```bash
-git clone git@github.com:YGA-13/LIED.git
-cd LIED
-pip install -r requirements.txt
-npm install
-python manage.py runserver
-```
 
 
 ### Want to help?
