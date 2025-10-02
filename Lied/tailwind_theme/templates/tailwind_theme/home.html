@@ -61,27 +61,37 @@
                 <h3 class="text-2xl font-semibold text-gray-900 mb-4">Gestión Integral de Repertorio</h3>
                 <p class="text-lg text-gray-700 mb-4">Organiza y analiza tu repertorio completo. Clasifica por dificultad, estilo y realiza análisis musicales detallados.</p>
                 <a href="{% if user.is_authenticated %}{% url 'lista_piezas' %}{% else %}{% url 'login' %}?next={% url 'lista_piezas' %}{% endif %}" 
-                   class="inline-block text-red-600 font-semibold hover:text-red-800">
+                class="inline-block text-red-600 font-semibold hover:text-red-800">
                     Gestionar y Analizar
                 </a>
             </div>
-        
+
+            <!-- Función: Dominio del Repertorio -->
+            <div class="function-card text-center">
+                <h3 class="text-2xl font-semibold text-gray-900 mb-4">Dominio del Repertorio</h3>
+                <p class="text-lg text-gray-700 mb-4">Sistema de seguimiento de progreso con métricas de dominio, recordatorios de repaso y evaluación técnica.</p>
+                <a href="{% if user.is_authenticated %}{% url 'mapa_dominio' %}{% else %}{% url 'login' %}?next={% url 'mapa_dominio' %}{% endif %}" 
+                class="inline-block text-red-600 font-semibold hover:text-red-800">
+                    Evaluar Progreso
+                </a>
+            </div>
+
             <!-- Función: Ejercicios Técnicos -->
             <div class="function-card text-center">
                 <h3 class="text-2xl font-semibold text-gray-900 mb-4">Ejercicios Técnicos</h3>
-                <p class="text-lg text-gray-700 mb-4">Genera ejercicios personalizados basados en tus necesidades técnicas y visualiza tu progreso.</p>
-                <a href="{% if user.is_authenticated %}{% url 'lista_piezas' %}{% else %}{% url 'login' %}?next={% url 'lista_piezas' %}{% endif %}" 
-                   class="inline-block text-red-600 font-semibold hover:text-red-800">
-                    Crear Ejercicios
+                <p class="text-lg text-gray-700 mb-4">Accede a ejercicios personalizados basados en tus obras.</p>
+                <a href="{% if user.is_authenticated %}{% url 'dashboard_ejercicios' %}{% else %}{% url 'login' %}?next={% url 'dashboard_ejercicios' %}{% endif %}" 
+                class="inline-block text-red-600 font-semibold hover:text-red-800">
+                    Ver Ejercicios
                 </a>
             </div>
-        
+
             <!-- Función: Rutinas Especializadas -->
             <div class="function-card text-center">
                 <h3 class="text-2xl font-semibold text-gray-900 mb-4">Rutinas Especializadas</h3>
                 <p class="text-lg text-gray-700 mb-4">Programas de práctica avanzada enfocados en técnicas específicas y preparación de conciertos.</p>
-                <a href="{% if user.is_authenticated %}{% url 'lista_piezas' %}{% else %}{% url 'login' %}?next={% url 'lista_piezas' %}{% endif %}" 
-                   class="inline-block text-red-600 font-semibold hover:text-red-800">
+                <a href="{% if user.is_authenticated %}{% url 'formulario_rutina' %}{% else %}{% url 'login' %}?next={% url 'formulario_rutina' %}{% endif %}" 
+                class="inline-block text-red-600 font-semibold hover:text-red-800">
                     Planificar Rutinas
                 </a>
             </div>

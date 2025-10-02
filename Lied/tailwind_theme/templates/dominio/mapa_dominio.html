@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LIED - Mapa de Dominio</title>
+    {% load static %}
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/repertoire/list_repertoire.css' %}">
+</head>
+<body class="bg-gray-100 flex flex-col min-h-screen">
+    <!-- Fondo fijo -->
+    <div class="hero-bg"></div>
+
+    <!-- Header -->
+    <header class="fixed w-full bg-black text-white shadow-lg z-50">
+        <div class="container mx-auto flex justify-between items-center p-4">
+            <div>
+                <a href="{% url 'home' %}" class="text-3xl font-bold text-red-600 hover:text-red-700 transition-colors">LIED</a>
+            </div>
+            <nav class="space-x-6 hidden md:flex items-center">
+                <a href="{% url 'lista_notas' %}" class="text-white hover:text-red-600 transition-colors flex items-center">
+                    <i class="fas fa-book-open mr-2"></i> Mis anotaciones
+                </a>
+                {% if user.is_authenticated %}
+                    <p class="text-white mr-4">{{ user.username }}</p>
+                    <form action="{% url 'logout' %}" method="post">
+                        {% csrf_token %}
+                        <button type="submit" class="text-white hover:text-red-600 transition-colors">Cerrar sesión</button>
+                    </form>
+                {% else %}
+                    <a href="{% url 'login' %}" class="hover:text-red-600 transition-colors">Iniciar sesión</a>
+                {% endif %}
+            </nav>
+        </div>
+    </header>
+
+    <!-- Contenido principal -->
+    <div class="relative z-10 flex-grow">
+        <!-- Hero Section -->
+        <div class="hero-content min-h-[70vh] flex items-center justify-center bg-gradient-to-b from-black/70 to-transparent">
+            <div class="container mx-auto text-center px-4">
+                <h1 class="text-5xl font-bold text-white mb-8 drop-shadow-lg">Mapa de Dominio</h1>
+                <p class="text-xl text-white mb-8 max-w-2xl mx-auto">Visualiza tu progreso en el repertorio</p>
+            </div>
+        </div>
+
+        <!-- Listado de Piezas -->
+        <main class="container mx-auto px-4 py-16">
+            {% if piezas %}
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    {% for pieza in piezas %}
+                    <div class="bg-white bg-opacity-90 backdrop-blur-sm rounded-2xl p-6 shadow-xl hover:shadow-2xl transition-shadow duration-300">
+                        
+                        <!-- Miniatura -->
+                        {% if pieza.miniatura %}
+                            <img src="{{ pieza.miniatura.url }}" alt="Miniatura de {{ pieza.titulo }}" class="w-full rounded-lg mb-4">
+                        {% endif %}
+
+                        <!-- Información de la pieza -->
+                        <div class="border-l-4 border-red-600 pl-4 mb-6">
+                            <h2 class="text-2xl font-bold text-gray-800">{{ pieza.titulo }}</h2>
+                            <p class="text-xl text-gray-600 font-medium">{{ pieza.compositor }}</p>
+                        </div>
+
+                        <!-- Estado de dominio -->
+                        {% if pieza.dominio %}
+                        <div class="mb-6">
+                            <div class="flex justify-between items-center mb-1">
+                                <span class="font-medium">Progreso:</span>
+                                <span>{{ pieza.dominio.progreso }}%</span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-2.5">
+                                <div class="bg-red-600 h-2.5 rounded-full" style="width: {{ pieza.dominio.progreso }}%"></div>
+                            </div>
+                            <p class="mt-2 text-sm">
+                                <span class="font-medium">Nivel:</span> {{ pieza.dominio.get_nivel_display }}
+                            </p>
+                        </div>
+                        {% endif %}
+
+                        <!-- Botones de acción -->
+                        <div class="flex justify-end space-x-4 border-t pt-4">
+                            <a href="{% url 'subir_grabacion' pieza.id %}" class="text-gray-600 hover:text-red-600 transition-colors font-medium">
+                                Subir grabación
+                            </a>
+                            {% if pieza.dominio and pieza.dominio.grabacion_ejecucion %}
+                            <a href="{% url 'comparar_grabaciones' pieza.id %}" class="text-gray-600 hover:text-red-600 transition-colors">
+                                Comparar
+                            </a>
+                            {% endif %}
+                            <a href="{% url 'actualizar_dominio' pieza.id %}" class="text-red-600 hover:text-red-800 transition-colors">
+                                Evaluar
+                            </a>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="text-center py-12">
+                    <p class="text-xl text-gray-600">No tienes piezas en tu repertorio</p>
+                    <a href="{% url 'añadir_pieza' %}" class="inline-block mt-4 bg-red-600 hover:bg-red-700 text-white py-3 px-8 rounded-xl transition-all transform hover:scale-105">
+                        ＋ Añadir Nueva Pieza
+                    </a>
+                </div>
+            {% endif %}
+        </main>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-black text-white py-8 mt-20">
+        <div class="container mx-auto text-center">
+            <p class="mb-4">© 2025 LIED. Todos los derechos reservados.</p>
+            <nav class="flex justify-center space-x-6">
+                <a href="{% url 'privacidad' %}" class="hover:text-red-600 transition-colors">Privacidad</a>
+                <a href="{% url 'terminos' %}" class="hover:text-red-600 transition-colors">Términos</a>
+                <a href="{% url 'contacto' %}" class="hover:text-red-600 transition-colors">Contacto</a>
+            </nav>
+        </div>
+    </footer>
+</body>
+</html>
+

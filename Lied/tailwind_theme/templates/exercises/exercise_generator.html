@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Ejercicios Personalizados - LIED</title>
+
+  <!-- Tailwind CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+  <!-- Font Awesome -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
+
+  <style>
+    /* Unificar estilos y evitar @apply en etiquetas style por compatibilidad */
+    .btn-primary {
+      background-color: #dc2626;
+      color: white;
+      padding: 0.75rem 1.5rem;
+      border-radius: 0.5rem;
+      transition: background-color 0.3s;
+      font-weight: 600;
+      white-space: nowrap;
+      display: inline-block;
+      text-align: center;
+    }
+    .btn-primary:hover {
+      background-color: #b91c1c;
+    }
+
+    .card-hover {
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      border: 1px solid #e5e7eb;
+      border-radius: 0.75rem;
+      cursor: pointer;
+      background-color: white;
+      box-shadow: 0 1px 3px rgb(0 0 0 / 0.1);
+    }
+    .card-hover:hover, .card-hover:focus {
+      transform: translateY(-4px);
+      box-shadow: 0 10px 15px rgb(0 0 0 / 0.2);
+      outline: none;
+      border-color: #dc2626;
+    }
+
+    .musicxml-preview svg {
+      width: 100%;
+      height: auto;
+      max-height: 180px;
+      border-radius: 0.5rem;
+      user-select: none;
+      pointer-events: none;
+    }
+
+    .instrucciones-list li {
+      color: #1f2937; /* gray-800 */
+      font-weight: 500;
+      font-size: 1rem;
+      position: relative;
+      padding-left: 28px;
+      margin-bottom: 12px;
+    }
+    .instrucciones-list li::before {
+      content: "•";
+      position: absolute;
+      left: 0;
+      color: #dc2626; /* red-600 */
+      font-weight: 900;
+      font-size: 1.5rem;
+      top: 0;
+      line-height: 1;
+    }
+
+    .section-card {
+      background-color: white;
+      border-radius: 1rem;
+      box-shadow: 0 10px 15px rgb(0 0 0 / 0.1);
+      padding: 1.5rem;
+    }
+
+    .consejo-card {
+      background-color: #f9fafb; /* gray-50 */
+      padding: 1rem;
+      border-radius: 0.5rem;
+      box-shadow: 0 1px 2px rgb(0 0 0 / 0.05);
+      border: 1px solid #e5e7eb;
+    }
+
+    /* Scrollbar estilos modal */
+    #modal-content::-webkit-scrollbar {
+      width: 8px;
+    }
+    #modal-content::-webkit-scrollbar-thumb {
+      background-color: #dc2626;
+      border-radius: 4px;
+    }
+    #modal-content {
+      scrollbar-width: thin;
+      scrollbar-color: #dc2626 transparent;
+    }
+
+  </style>
+</head>
+<body class="bg-gray-50 min-h-screen flex flex-col">
+
+  <!-- Header -->
+  <header class="bg-black shadow-sm sticky top-0 z-50">
+    <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+      <a href="{% url 'home' %}" class="text-3xl font-bold text-red-600 hover:text-red-700 transition-colors" tabindex="0" aria-label="Ir a página principal LIED">LIED</a>
+      <nav class="flex items-center space-x-6" aria-label="Menú principal">
+        <a href="{% url 'lista_piezas' %}" class="text-white hover:text-red-600 focus:outline-none focus:ring-2 focus:ring-red-600 rounded">Mis Partituras</a>
+        <form action="{% url 'logout' %}" method="post" class="inline">
+          {% csrf_token %}
+          <button type="submit" class="text-white hover:text-red-600 focus:outline-none focus:ring-2 focus:ring-red-600 rounded" aria-label="Cerrar sesión">Cerrar Sesión</button>
+        </form>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="container mx-auto px-4 py-8 flex-grow" role="main">
+
+    <!-- Información Pieza -->
+    <section class="section-card mb-8 flex flex-col md:flex-row justify-between items-start md:items-center" aria-labelledby="titulo-pieza">
+      <div>
+        <h1 id="titulo-pieza" class="text-3xl font-bold text-gray-800 mb-2">Ejercicios Personalizados</h1>
+        <h2 class="text-2xl font-bold text-red-600 mb-1" tabindex="0">{{ pieza.titulo }}</h2>
+        <p class="text-gray-600" tabindex="0">
+          {{ pieza.compositor }} &bull; 
+          <span class="bg-gray-100 text-gray-800 px-2 py-1 rounded text-sm" aria-label="Tonalidad principal">{{ analisis.tonalidad_principal }}</span>
+        </p>
+      </div>
+      <a href="{% url 'detalle_analisis' pieza.id %}" class="btn-primary mt-4 md:mt-0" role="button" aria-label="Ver análisis completo de {{ pieza.titulo }}">
+        Ver Análisis Completo
+      </a>
+    </section>
+
+    <!-- Lista de Ejercicios -->
+    <section class="section-card mb-8" aria-labelledby="titulo-ejercicios">
+      <h3 id="titulo-ejercicios" class="text-xl font-semibold mb-4">Ejercicios generados</h3>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {% for clave, data in ejercicios.items %}
+        <article class="card-hover focus:outline-none focus:ring-2 focus:ring-red-600 rounded" tabindex="0" aria-label="Ejercicio {{ data.titulo }}">
+          <div class="p-6">
+            <h4 class="text-lg font-bold mb-4 border-b border-red-200 pb-2">{{ data.titulo }}</h4>
+            <div class="musicxml-preview min-h-[180px] rounded-lg" data-content="{{ data.contenido }}">
+              {% if not data.contenido %}
+              <div class="flex flex-col items-center justify-center h-full py-8 text-red-500">
+                <i class="fas fa-exclamation-circle text-3xl mb-2" aria-hidden="true"></i>
+                <p class="font-medium">Contenido no disponible</p>
+              </div>
+              {% endif %}
+            </div>
+          </div>
+        </article>
+        {% endfor %}
+      </div>
+    </section>
+
+    <!-- Instrucciones para la Práctica (estilo unificado) -->
+    <div class="section-card mb-8">
+    <h3 class="text-xl font-semibold mb-4 flex items-center">
+        <i class="fas fa-lightbulb text-yellow-500 mr-2"></i>Instrucciones para la Práctica
+    </h3>
+    <ul class="instrucciones-list">
+        <li>Calienta siempre antes de comenzar para evitar lesiones.</li>
+        <li>Enfócate en la calidad del sonido más que en la rapidez.</li>
+        <li>Utiliza repeticiones con intención y concentración plena.</li>
+        <li>Varía el dinamismo para dar expresividad a cada frase.</li>
+        <li>Escucha atentamente y corrige tus errores de inmediato.</li>
+        <li>Haz pausas cortas para mantener la mente fresca y el cuerpo relajado.</li>
+    </ul>
+    </div>
+
+    <!-- Consejos Técnicos (como en dashboard) -->
+    <div class="section-card">
+    <h3 class="text-xl font-semibold mb-4 flex items-center">
+        <i class="fas fa-trophy text-red-500 mr-2"></i>Consejos Técnicos
+    </h3>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="consejo-card">
+        <div class="flex items-start">
+            <div class="mr-3">
+            <i class="fas fa-metronome text-purple-600 text-2xl"></i>
+            </div>
+            <div>
+            <h4 class="font-semibold mb-1">Controla el ritmo</h4>
+            <p class="text-sm text-gray-700">Practica con metrónomo para desarrollar una pulsación firme y constante.</p>
+            </div>
+        </div>
+        </div>
+        
+        <div class="consejo-card">
+        <div class="flex items-start">
+            <div class="mr-3">
+            <i class="fas fa-brain text-blue-600 text-2xl"></i>
+            </div>
+            <div>
+            <h4 class="font-semibold mb-1">Visualiza el resultado</h4>
+            <p class="text-sm text-gray-700">Imagina cómo quieres que suene la pieza para guiar mejor tu interpretación.</p>
+            </div>
+        </div>
+        </div>
+    </div>
+    </div>
+
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-black text-white py-12 mt-auto" role="contentinfo">
+    <div class="container mx-auto px-4 text-center">
+      <div class="text-3xl font-bold text-red-600 mb-4">LIED</div>
+      <p class="mb-6">© 2025 LIED. Todos los derechos reservados.</p>
+      <nav class="flex justify-center space-x-6" aria-label="Enlaces de pie de página">
+        <a href="{% url 'privacidad' %}" class="hover:text-red-600 focus:outline-none focus:ring-2 focus:ring-red-600 rounded">Privacidad</a>
+        <a href="{% url 'terminos' %}" class="hover:text-red-600 focus:outline-none focus:ring-2 focus:ring-red-600 rounded">Términos</a>
+        <a href="{% url 'contacto' %}" class="hover:text-red-600 focus:outline-none focus:ring-2 focus:ring-red-600 rounded">Contacto</a>
+      </nav>
+    </div>
+  </footer>
+
+  <!-- Modal para partituras ampliadas -->
+  <div id="modal" class="fixed inset-0 bg-black bg-opacity-90 flex items-center justify-center hidden z-50" role="dialog" aria-modal="true" aria-labelledby="modal-title" aria-describedby="modal-content">
+    <div class="bg-white rounded-xl max-w-7xl max-h-[90vh] w-full p-6 overflow-auto relative">
+      <button id="modal-close" class="absolute top-4 right-4 text-gray-600 hover:text-gray-900 text-3xl font-bold transition-colors focus:outline-none focus:ring-2 focus:ring-red-600" aria-label="Cerrar modal">&times;</button>
+      <div id="modal-content" class="overflow-auto py-4" style="max-height: 80vh;"></div>
+    </div>
+  </div>
+
+  <script src="https://www.verovio.org/javascript/latest/verovio-toolkit.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const vrvToolkit = new verovio.toolkit();
+      vrvToolkit.setOptions({
+        scale: 60,
+        pageWidth: 1400,
+        adjustPageHeight: true,
+        spacingSystem: 2.5,
+        footer: "none",
+        header: "none"
+      });
+
+      // Render preview musicxml
+      document.querySelectorAll(".musicxml-preview[data-content]").forEach(container => {
+        const content = container.dataset.content;
+        if (!content) {
+          container.innerHTML = `
+            <div class="flex flex-col items-center justify-center h-full py-8 text-red-500">
+              <i class="fas fa-exclamation-circle text-3xl mb-2"></i>
+              <p class="font-medium">Contenido no disponible</p>
+            </div>`;
+          return;
+        }
+        try {
+          const decoded = atob(content);
+          vrvToolkit.loadData(decoded);
+          let svg = vrvToolkit.renderToSVG(1);
+          const tempDiv = document.createElement("div");
+          tempDiv.innerHTML = svg;
+          tempDiv.querySelectorAll("text").forEach(el => {
+            const txt = el.textContent.toLowerCase();
+            if (txt.includes("music21") || txt.includes("fragment")) el.remove();
+          });
+          container.innerHTML = tempDiv.innerHTML;
+        } catch {
+          container.innerHTML = `
+            <div class="flex flex-col items-center justify-center h-full py-8 text-red-500">
+              <i class="fas fa-exclamation-triangle text-3xl mb-2"></i>
+              <p class="font-medium">Error al renderizar</p>
+            </div>`;
+        }
+      });
+
+      // Modal funcionalidad
+      const modal = document.getElementById("modal");
+      const modalContent = document.getElementById("modal-content");
+      const modalClose = document.getElementById("modal-close");
+      const vrvModalToolkit = new verovio.toolkit();
+      vrvModalToolkit.setOptions({
+        scale: 120,
+        pageWidth: 1400,
+        adjustPageHeight: true,
+        spacingSystem: 2.5,
+        footer: "none",
+        header: "none"
+      });
+
+      modalClose.addEventListener("click", () => {
+        modal.classList.add("hidden");
+        modalContent.innerHTML = "";
+      });
+
+      // Cerrar modal con ESC
+      document.addEventListener("keydown", e => {
+        if (e.key === "Escape" && !modal.classList.contains("hidden")) {
+          modal.classList.add("hidden");
+          modalContent.innerHTML = "";
+        }
+      });
+
+      // Abrir modal al hacer clic en ejercicio
+      document.querySelectorAll(".card-hover").forEach(card => {
+        card.addEventListener("click", () => {
+          const preview = card.querySelector(".musicxml-preview[data-content]");
+          if (!preview) return;
+          const content = preview.dataset.content;
+          try {
+            const decoded = atob(content);
+            vrvModalToolkit.loadData(decoded);
+            modalContent.innerHTML = vrvModalToolkit.renderToSVG(1);
+            modal.classList.remove("hidden");
+            // Foco para accesibilidad
+            modalClose.focus();
+          } catch {
+            modalContent.innerHTML = `
+              <div class="flex flex-col items-center justify-center h-full py-8 text-red-500">
+                <i class="fas fa-exclamation-triangle text-3xl mb-2"></i>
+                <p class="font-medium">Error al renderizar partitura</p>
+              </div>`;
+            modal.classList.remove("hidden");
+            modalClose.focus();
+          }
+        });
+        // También abrir modal con tecla Enter o Space para accesibilidad
+        card.addEventListener("keydown", (e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            card.click();
+          }
+        });
+      });
+    });
+  </script>
+
+</body>
+</html>

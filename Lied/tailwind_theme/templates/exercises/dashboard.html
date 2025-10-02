@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Ejercicios Técnicos - LIED</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
+    <style>
+        .btn-primary { @apply bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-700 transition-colors; }
+        .card-hover { @apply transition-all duration-300 transform hover:-translate-y-1 hover:shadow-xl; }
+        .musicxml-preview svg { width: 100%; height: auto; max-height: 180px; }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <header class="bg-black shadow-sm sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+            <a href="{% url 'home' %}" class="text-3xl font-bold text-red-600 hover:text-red-700 transition-colors">LIED</a>
+            <nav class="flex items-center space-x-6">
+                <a href="{% url 'lista_piezas' %}" class="text-white hover:text-red-600">Mis Partituras</a>
+                <form action="{% url 'logout' %}" method="post">{% csrf_token %}
+                    <button type="submit" class="text-white hover:text-red-600">Cerrar Sesión</button>
+                </form>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-4 py-8">
+        <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
+            <h1 class="text-3xl font-bold text-gray-800 mb-2">Ejercicios Técnicos Personalizados</h1>
+            <div class="flex items-center space-x-4 text-gray-600">
+                <p class="text-lg">Basados en tus partituras analizadas</p>
+                <span class="bg-red-100 text-red-800 px-3 py-1 rounded-full text-sm">{{ piezas.count }} obras</span>
+            </div>
+        </div>
+
+        {% if piezas %}
+        <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
+            <h2 class="text-xl font-semibold mb-4">Tus Partituras</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {% for pieza in piezas %}
+                <div class="bg-white rounded-xl shadow-md p-6 card-hover border border-gray-200">
+                    <h3 class="text-lg font-bold mb-1">{{ pieza.titulo }}</h3>
+                    <p class="text-gray-600 mb-3">{{ pieza.compositor }}</p>
+                    <div class="mb-4">
+                        <span class="inline-block bg-gray-100 text-gray-800 text-xs px-2 py-1 rounded">
+                            {{ pieza.analisis_data.tonalidad_principal|default:"Tonalidad no detectada" }}
+                        </span>
+                    </div>
+                    <div class="flex flex-col space-y-2">
+                        <a href="{% url 'generar_ejercicios' pieza.id %}" class="bg-blue-50 hover:bg-blue-100 text-blue-800 py-2 px-4 rounded-lg text-center transition-colors">
+                            Ver Ejercicios
+                        </a>
+                        <a href="{% url 'detalle_analisis' pieza.id %}" class="bg-gray-50 hover:bg-gray-100 text-gray-800 py-2 px-4 rounded-lg text-center transition-colors">
+                            Análisis Técnico
+                        </a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Nueva sección de Consejos Técnicos -->
+        <div class="bg-white rounded-xl shadow-lg p-6 mt-8">
+            <h3 class="text-xl font-semibold mb-4 flex items-center">
+                <i class="fas fa-lightbulb text-yellow-500 mr-2"></i>Consejos Técnicos del Día
+            </h3>
+            <div id="consejos-container" class="grid grid-cols-1 md:grid-cols-2 gap-4 text-gray-800"></div>
+        </div>
+
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                const consejos = [
+                    {
+                        icono: "fas fa-wave-square",
+                        color: "text-purple-600",
+                        titulo: "Respira con la música",
+                        texto: "Piensa en las frases como si fueran oraciones habladas. Toma aire y deja que la música fluya con naturalidad."
+                    },
+                    {
+                        icono: "fas fa-fingerprint",
+                        color: "text-red-600",
+                        titulo: "Busca tu sonido",
+                        texto: "No imites. Trabaja en encontrar un timbre propio, aunque partas de modelos de referencia."
+                    },
+                    {
+                        icono: "fas fa-stopwatch",
+                        color: "text-blue-600",
+                        titulo: "Practica lento",
+                        texto: "El control técnico nace de la lentitud. Repite pasajes difíciles a menos de la mitad del tempo."
+                    },
+                    {
+                        icono: "fas fa-ruler-combined",
+                        color: "text-green-600",
+                        titulo: "Afina tus dinámicas",
+                        texto: "No pienses en forte o piano, piensa en intensidades intermedias. Detalles como mezzoforte o crescendo marcan la diferencia."
+                    },
+                    {
+                        icono: "fas fa-puzzle-piece",
+                        color: "text-yellow-600",
+                        titulo: "Divide y vencerás",
+                        texto: "Trabaja por bloques pequeños. No repitas todo el fragmento: enfócate en los compases problemáticos."
+                    },
+                    {
+                        icono: "fas fa-vial",
+                        color: "text-pink-600",
+                        titulo: "Escucha tus grabaciones",
+                        texto: "La retroalimentación auditiva te ayuda a detectar errores técnicos y expresivos que no notas en el momento."
+                    },
+                ];
+
+                const seleccionados = consejos.sort(() => 0.5 - Math.random()).slice(0, 2);
+                const container = document.getElementById("consejos-container");
+
+                seleccionados.forEach(consejo => {
+                    const card = document.createElement("div");
+                    card.className = "bg-gray-50 p-4 rounded-lg shadow-sm border";
+                    card.innerHTML = `
+                        <div class="flex items-start">
+                            <div class="mr-3">
+                                <i class="${consejo.icono} ${consejo.color} text-2xl"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold mb-1">${consejo.titulo}</h4>
+                                <p class="text-sm text-gray-700">${consejo.texto}</p>
+                            </div>
+                        </div>
+                    `;
+                    container.appendChild(card);
+                });
+            });
+        </script>
+    </main>
+
+    <footer class="bg-black text-white py-12 mt-12">
+        <div class="container mx-auto px-4 text-center">
+            <div class="text-3xl font-bold text-red-600 mb-4">LIED</div>
+            <p class="mb-6">© 2025 LIED. Todos los derechos reservados.</p>
+            <nav class="flex justify-center space-x-6">
+                <a href="{% url 'privacidad' %}" class="hover:text-red-600">Privacidad</a>
+                <a href="{% url 'terminos' %}" class="hover:text-red-600">Términos</a>
+                <a href="{% url 'contacto' %}" class="hover:text-red-600">Contacto</a>
+            </nav>
+        </div>
+    </footer>
+
+    <script src="https://www.verovio.org/javascript/latest/verovio-toolkit.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const vrvToolkit = new verovio.toolkit();
+            vrvToolkit.setOptions({
+                scale: 60,
+                pageWidth: 1400,
+                pageHeight: 400,
+                adjustPageHeight: true,
+                spacingStaff: 2.5
+            });
+
+            document.querySelectorAll('.musicxml-preview').forEach(container => {
+                const content = container.dataset.content;
+                if (!content) {
+                    container.innerHTML = '<p class="text-red-500 text-center py-4">Contenido no disponible</p>';
+                    return;
+                }
+
+                try {
+                    const musicxml = atob(content);
+                    vrvToolkit.loadData(musicxml);
+                    const svg = vrvToolkit.renderToSVG(1);
+                    const tempDiv = document.createElement('div');
+                    tempDiv.innerHTML = svg;
+
+                    tempDiv.querySelectorAll('text').forEach(textEl => {
+                        if (textEl.textContent.toLowerCase().includes('music21') || textEl.textContent.toLowerCase().includes('fragment')) {
+                            textEl.remove();
+                        }
+                    });
+
+                    container.innerHTML = tempDiv.innerHTML;
+                } catch(error) {
+                    container.innerHTML = '<div class="text-center py-4 text-red-500"><i class="fas fa-exclamation-triangle"></i><p>Error al renderizar</p></div>';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LIED - Comparar Grabaciones</title>
+    {% load static %}
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/repertoire/list_repertoire.css' %}">
+</head>
+<body class="bg-gray-100 flex flex-col min-h-screen">
+    <!-- Fondo fijo -->
+    <div class="hero-bg"></div>
+
+    <!-- Header -->
+    <header class="fixed w-full bg-black text-white shadow-lg z-50">
+        <div class="container mx-auto flex justify-between items-center p-4">
+            <div>
+                <a href="{% url 'home' %}" class="text-3xl font-bold text-red-600 hover:text-red-700 transition-colors">LIED</a>
+            </div>
+            <nav class="space-x-6 hidden md:flex items-center">
+                <a href="{% url 'lista_notas' %}" class="text-white hover:text-red-600 transition-colors flex items-center">
+                    <i class="fas fa-book-open mr-2"></i> Mis anotaciones
+                </a>
+                {% if user.is_authenticated %}
+                    <p class="text-white mr-4">{{ user.username }}</p>
+                    <form action="{% url 'logout' %}" method="post">
+                        {% csrf_token %}
+                        <button type="submit" class="text-white hover:text-red-600 transition-colors">Cerrar sesión</button>
+                    </form>
+                {% else %}
+                    <a href="{% url 'login' %}" class="hover:text-red-600 transition-colors">Iniciar sesión</a>
+                {% endif %}
+            </nav>
+        </div>
+    </header>
+
+    <!-- Contenido principal -->
+    <div class="relative z-10 flex-grow">
+        <!-- Hero Section -->
+        <div class="hero-content min-h-[70vh] flex items-center justify-center bg-gradient-to-b from-black/70 to-transparent">
+            <div class="container mx-auto text-center px-4">
+                <h1 class="text-5xl font-bold text-white mb-8 drop-shadow-lg">Comparar Grabaciones</h1>
+                <p class="text-xl text-white mb-8 max-w-2xl mx-auto">{{ pieza.titulo }} - {{ pieza.compositor }}</p>
+            </div>
+        </div>
+
+        <!-- Resultados -->
+        <main class="container mx-auto px-4 py-16">
+            <div class="max-w-4xl mx-auto bg-white bg-opacity-90 backdrop-blur-sm rounded-2xl p-8 shadow-xl">
+                <div class="grid md:grid-cols-2 gap-8 mb-8">
+                    <div>
+                        <h2 class="text-2xl font-bold text-gray-800 mb-4">Grabación Original</h2>
+                        <audio controls class="w-full">
+                            <source src="{{ dominio.grabacion_original.url }}" type="audio/mpeg">
+                        </audio>
+                    </div>
+                    <div>
+                        <h2 class="text-2xl font-bold text-gray-800 mb-4">Tu Interpretación</h2>
+                        <audio controls class="w-full">
+                            <source src="{{ dominio.grabacion_ejecucion.url }}" type="audio/mpeg">
+                        </audio>
+                    </div>
+                </div>
+                
+                <div class="border-t pt-6">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-6">Progreso</h2>
+                    <div class="space-y-4">
+                        <div>
+                            <div class="flex justify-between mb-1">
+                                <span class="font-medium">Precisión de Tempo</span>
+                                <span>85%</span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-2.5">
+                                <div class="bg-blue-600 h-2.5 rounded-full" style="width: 85%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between mb-1">
+                                <span class="font-medium">Precisión de Afinación</span>
+                                <span>78%</span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-2.5">
+                                <div class="bg-green-600 h-2.5 rounded-full" style="width: 78%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between mb-1">
+                                <span class="font-medium">Expresión Musical</span>
+                                <span>65%</span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-2.5">
+                                <div class="bg-purple-600 h-2.5 rounded-full" style="width: 65%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="flex justify-end mt-8">
+                    <a href="{% url 'mapa_dominio' %}" class="px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors">
+                        Volver al Mapa
+                    </a>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-black text-white py-8 mt-20">
+        <div class="container mx-auto text-center">
+            <p class="mb-4">© 2025 LIED. Todos los derechos reservados.</p>
+            <nav class="flex justify-center space-x-6">
+                <a href="{% url 'privacidad' %}" class="hover:text-red-600 transition-colors">Privacidad</a>
+                <a href="{% url 'terminos' %}" class="hover:text-red-600 transition-colors">Términos</a>
+                <a href="{% url 'contacto' %}" class="hover:text-red-600 transition-colors">Contacto</a>
+            </nav>
+        </div>
+    </footer>
+</body>
+</html>
