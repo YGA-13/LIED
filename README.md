@@ -40,15 +40,17 @@ Built with modern web tech so it's smooth and fast:
 2. **Set up Python environment**:
    ```bash
    python -m venv venv
-   source venv/bin/activate  # Linux/Mac
-   venv\Scripts\activate    # Windows
+   source venv/bin/activate      # Linux / Mac
+   source venv/Scripts/activate  # Git Bash (Windows)
+   venv\Scripts\activate         # Windows CMD
+   .\venv\Scripts\Activate.ps1   # Windows PowerShell
    pip install -r requirements.txt
    ```
 
 3. **Prepare database**:
    ```bash
-   python manage.py migrate
    python manage.py makemigrations
+   python manage.py migrate
    ```
 
 4. **Run development server**:
