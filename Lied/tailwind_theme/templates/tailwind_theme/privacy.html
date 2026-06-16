@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Política de Privacidad - LIED</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/privacy.css' %}">
+</head>
+<body class="bg-white text-gray-800">
+    
+    <!-- Header -->
+    <header class="fixed w-full bg-black text-white shadow-md z-50">
+        <div class="container mx-auto flex justify-between items-center p-4">
+            <a href="{% url 'home' %}" class="text-3xl font-bold text-red-600 hover:text-red-700 transition-colors duration-200">LIED</a>
+            <nav class="space-x-6 hidden md:flex">
+                {% if user.is_authenticated %}
+                    <p class="text-white">{{ user.username }}</p>
+                    <form action="{% url 'logout' %}" method="post" class="inline-block">
+                        {% csrf_token %}
+                        <button type="submit" class="text-white hover:text-red-600">Cerrar sesión</button>
+                    </form>
+                {% else %}
+                    <a href="{% url 'login' %}" class="hover:text-red-600">Iniciar sesión</a>
+                {% endif %}
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="pt-20 pb-10 px-4">
+        <div class="container mx-auto">
+            <h1 class="text-4xl font-bold text-red-600 text-center mb-8">Política de Privacidad</h1>
+
+            <div class="bg-white p-8 rounded-lg shadow-lg max-w-4xl mx-auto space-y-6">
+                <section>
+                    <h2 class="text-2xl font-semibold text-gray-900 mb-4">1. Recopilación de Información</h2>
+                    <p class="text-gray-700 mb-4">Recopilamos los siguientes tipos de información cuando usas nuestros servicios:
+                        <ul class="list-disc pl-6 mb-4">
+                            <li>Datos de registro (nombre, email, contraseña)</li>
+                            <li>Información de uso (dirección IP, tipo de dispositivo, registros de actividad)</li>
+                            <li>Datos de transacciones (historial de compras/pagos)</li>
+                            <li>Contenido generado por el usuario (comentarios, preferencias)</li>
+                        </ul>
+                    </p>
+                </section>
+
+                <section>
+                    <h2 class="text-2xl font-semibold text-gray-900 mb-4">2. Finalidad del Tratamiento</h2>
+                    <p class="text-gray-700 mb-4">Utilizamos tus datos para:
+                        <ul class="list-disc pl-6 mb-4">
+                            <li>Proveer y mantener nuestros servicios</li>
+                            <li>Mejorar la experiencia del usuario</li>
+                            <li>Comunicaciones de servicio</li>
+                            <li>Prevenir fraudes y abusos</li>
+                            <li>Cumplir con obligaciones legales</li>
+                        </ul>
+                    </p>
+                </section>
+
+                <section>
+                    <h2 class="text-2xl font-semibold text-gray-900 mb-4">3. Base Legal</h2>
+                    <p class="text-gray-700 mb-4">El tratamiento se basa en:
+                        <ul class="list-disc pl-6 mb-4">
+                            <li>Tu consentimiento explícito</li>
+                            <li>Ejecución de contratos</li>
+                            <li>Intereses legítimos del responsable</li>
+                            <li>Cumplimiento de obligaciones legales</li>
+                        </ul>
+                    </p>
+                </section>
+
+                <section>
+                    <h2 class="text-2xl font-semibold text-gray-900 mb-4">4. Compartir Información</h2>
+                    <p class="text-gray-700 mb-4">Podemos compartir datos con:
+                        <ul class="list-disc pl-6 mb-4">
+                            <li>Proveedores de servicios esenciales</li>
+                            <li>Autoridades competentes cuando sea requerido por ley</li>
+                            <li>Nuevos propietarios en caso de fusión o adquisición</li>
+                        </ul>
+                        Nunca vendemos datos personales a terceros con fines comerciales.
+                    </p>
+                </section>
+
+                <section>
+                    <h2 class="text-2xl font-semibold text-gray-900 mb-4">5. Cookies y Tecnologías Similares</h2>
+                    <p class="text-gray-700 mb-4">Utilizamos cookies para:
+                        <ul class="list-disc pl-6 mb-4">
+                            <li>Autenticación de usuarios</li>
+                            <li>Preferencias personalizadas</li>
+                            <li>Análisis de tráfico</li>
+                            <li>Publicidad segmentada</li>
+                        </ul>
+                        Puedes gestionar las preferencias de cookies desde tu navegador.
+                    </p>
+                </section>
+
+                <section>
+                    <h2 class="text-2xl font-semibold text-gray-900 mb-4">6. Seguridad de Datos</h2>
+                    <p class="text-gray-700 mb-4">Implementamos medidas técnicas y organizativas incluyendo:
+                        <ul class="list-disc pl-6 mb-4">
+                            <li>Cifrado SSL/TLS</li>
+                            <li>Auditorías periódicas de seguridad</li>
+                            <li>Acceso restringido al personal autorizado</li>
+                            <li>Copias de seguridad encriptadas</li>
+                        </ul>
+                    </p>
+                </section>
+
+                <section>
+                    <h2 class="text-2xl font-semibold text-gray-900 mb-4">7. Transferencias Internacionales</h2>
+                    <p class="text-gray-700 mb-4">Los datos pueden transferirse a países fuera del EEE bajo garantías adecuadas como:
+                        <ul class="list-disc pl-6 mb-4">
+                            <li>Cláusulas contractuales tipo de la UE</li>
+                            <li>Certificación Privacy Shield (para EE.UU.)</li>
+                            <li>Decisiones de adecuación de la Comisión Europea</li>
+                        </ul>
+                    </p>
+                </section>
+
+                <section>
+                    <h2 class="text-2xl font-semibold text-gray-900 mb-4">8. Derechos ARCO</h2>
+                    <p class="text-gray-700 mb-4">Tienes derecho a:
+                        <ul class="list-disc pl-6 mb-4">
+                            <li>Acceder a tus datos personales</li>
+                            <li>Solicitar rectificación</li>
+                            <li>Ejercer el derecho al olvido</li>
+                            <li>Limitar el tratamiento</li>
+                            <li>Portabilidad de datos</li>
+                            <li>Oposición al tratamiento</li>
+                        </ul>
+                        Para ejercer estos derechos, contacta a nuestro Delegado de Protección de Datos en [protecciondatos@lied.com]
+                    </p>
+                </section>
+
+                <section>
+                    <h2 class="text-2xl font-semibold text-gray-900 mb-4">9. Conservación de Datos</h2>
+                    <p class="text-gray-700 mb-4">Mantenemos tus datos durante:
+                        <ul class="list-disc pl-6 mb-4">
+                            <li>Cuentas activas: Hasta solicitud de baja</li>
+                            <li>Datos transaccionales: 5 años por requerimientos legales</li>
+                            <li>Cookies: Hasta 24 meses desde última actividad</li>
+                        </ul>
+                    </p>
+                </section>
+
+                <section>
+                    <h2 class="text-2xl font-semibold text-gray-900 mb-4">10. Cambios en la Política</h2>
+                    <p class="text-gray-700">Notificaremos cambios significativos mediante:
+                        <ul class="list-disc pl-6 mt-2">
+                            <li>Notificación por email a usuarios registrados</li>
+                            <li>Aviso destacado en la plataforma</li>
+                            <li>Actualización de la fecha efectiva en esta página</li>
+                        </ul>
+                    </p>
+                </section>
+
+                <p class="text-gray-700 mt-8 border-t pt-4">Última actualización: [06/03/2025]</p>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-black text-white py-8">
+        <div class="container mx-auto text-center">
+            <p>© 2025 LIED. Todos los derechos reservados.</p>
+            <nav class="flex justify-center space-x-4 mt-4">
+                <a href="{% url 'privacidad' %}" class="hover:text-red-600">Privacidad</a>
+                <a href="{% url 'terminos' %}" class="hover:text-red-600">Términos</a>
+                <a href="{% url 'contacto' %}" class="hover:text-red-600">Contacto</a>
+            </nav>
+        </div>
+    </footer>
+
+</body>
+</html>

@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LIED - Mis Notas Técnicas</title>
+    {% load static %}
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/notes/notes.css' %}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 flex flex-col min-h-screen">
+
+    <!-- Fondo fijo -->
+    <div class="hero-bg"></div>
+
+    <!-- Header -->
+    <header class="fixed w-full bg-black text-white shadow-lg z-50">
+        <div class="container mx-auto flex justify-between items-center p-4">
+            <div>
+                <a href="{% url 'home' %}" class="text-3xl font-bold text-red-600 hover:text-red-700 transition-colors">LIED</a>
+            </div>
+            <nav class="space-x-6 hidden md:flex items-center">
+                <a href="{% url 'lista_notas' %}" class="text-white hover:text-red-600 transition-colors flex items-center">
+                    <i class="fas fa-book-open mr-2"></i> Mis anotaciones
+                </a>
+                {% if user.is_authenticated %}
+                    <p class="text-white mr-4">{{ user.username }}</p>
+                    <form action="{% url 'logout' %}" method="post">
+                        {% csrf_token %}
+                        <button type="submit" class="text-white hover:text-red-600 transition-colors">Cerrar sesión</button>
+                    </form>
+                {% else %}
+                    <a href="{% url 'login' %}" class="hover:text-red-600 transition-colors">Iniciar sesión</a>
+                {% endif %}
+            </nav>
+        </div>
+    </header>
+
+    <!-- Contenido principal -->
+    <div class="relative z-10 flex-grow pt-16">
+        {% if not notas %}
+        <!-- Hero Section solo cuando NO hay notas -->
+        <div class="hero-content min-h-[70vh] flex items-center justify-center bg-gradient-to-b from-black/70 to-transparent">
+            <div class="container mx-auto text-center px-4">
+                <h1 class="text-5xl font-bold text-white mb-8 drop-shadow-lg">Mis Notas Técnicas</h1>
+                <a href="{% url 'crear_nota' %}" 
+                   class="inline-block bg-red-600 hover:bg-red-700 text-white text-lg py-3 px-8 rounded-xl transition-all transform hover:scale-105">
+                    ＋ Crear mi primera nota
+                </a>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Listado de Notas -->
+        <main class="container mx-auto px-4 py-8">
+            <div class="flex justify-between items-center mb-8">
+                <h1 class="text-3xl font-bold text-gray-800">{% if notas %}Mis Notas{% else %}{% endif %}</h1>
+                {% if notas %}
+                <a href="{% url 'crear_nota' %}" 
+                   class="bg-red-600 hover:bg-red-700 text-white py-2 px-6 rounded-lg transition-colors">
+                    <i class="fas fa-plus mr-2"></i>Nueva Nota
+                </a>
+                {% endif %}
+            </div>
+
+            {% if notas %}
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {% for nota in notas %}
+                    <div class="bg-white bg-opacity-90 backdrop-blur-sm rounded-xl p-6 shadow-lg hover:shadow-xl transition-shadow duration-300">
+                        <div class="border-l-4 border-red-600 pl-4 mb-4">
+                            <h2 class="text-xl font-bold text-gray-800">{{ nota.titulo }}</h2>
+                            <p class="text-sm text-gray-500 mt-1">
+                                <span class="bg-gray-100 px-2 py-1 rounded">{{ nota.get_tipo_display }}</span>
+                                {% if nota.pieza_relacionada %}
+                                <span class="ml-2">
+                                    {{ nota.pieza_relacionada.titulo|truncatechars:20 }}
+                                </span>
+                                {% endif %}
+                            </p>
+                        </div>
+                        
+                        <p class="text-gray-600 mb-4 text-sm">{{ nota.contenido|truncatechars:120 }}</p>
+                        
+                        <div class="flex justify-between items-center border-t pt-3">
+                            <div class="flex space-x-3">
+                                <a href="{% url 'editar_nota' nota.id %}" class="text-blue-500 hover:text-blue-700">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <a href="{% url 'eliminar_nota' nota.id %}" class="text-red-500 hover:text-red-700">
+                                    <i class="fas fa-trash-alt"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="text-center py-12 bg-white/80 backdrop-blur-sm rounded-xl max-w-md mx-auto p-8 shadow-lg">
+                    <p class="text-xl text-gray-700">No tienes ninguna nota técnica aún.</p>
+                </div>
+            {% endif %}
+        </main>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-black text-white py-8 mt-12">
+        <div class="container mx-auto text-center">
+            <p class="mb-4">© 2025 LIED. Todos los derechos reservados.</p>
+            <nav class="flex justify-center space-x-6">
+                <a href="{% url 'privacidad' %}" class="hover:text-red-600 transition-colors">Privacidad</a>
+                <a href="{% url 'terminos' %}" class="hover:text-red-600 transition-colors">Términos</a>
+                <a href="{% url 'contacto' %}" class="hover:text-red-600 transition-colors">Contacto</a>
+            </nav>
+        </div>
+    </footer>
+
+</body>
+</html>

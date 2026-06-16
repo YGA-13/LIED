@@ -1,0 +1,55 @@
+/* Estilos personalizados para el análisis detallado */
+.tonalidad-badge {
+    background: linear-gradient(135deg, #3B82F6 0%, #1D4ED8 100%);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.exercise-card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.exercise-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+/* Efecto hover para las tarjetas de análisis */
+.bg-white.transform:hover {
+    box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
+}
+
+/* Estilos para iconos de pedal */
+.fa-pedal-bike {
+    color: #4B5563;
+}
+
+/* Transiciones suaves */
+.transition {
+    transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, transform;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 150ms;
+}
+
+/* Efecto hover para botones */
+.hover\:scale-105:hover {
+    transform: scale(1.05);
+}
+
+/* Estilos para el borde izquierdo de las tarjetas de modulación */
+.border-l-4 {
+    border-left-width: 4px;
+}
+
+/* Estilos para los badges de tonalidad */
+.bg-red-50 {
+    background-color: #FEF2F2;
+}
+.bg-green-50 {
+    background-color: #F0FDF4;
+}
+.bg-purple-50 {
+    background-color: #FAF5FF;
+}
+.bg-blue-50 {
+    background-color: #EFF6FF;
+}

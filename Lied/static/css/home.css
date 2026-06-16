@@ -1,0 +1,85 @@
+/* Estilos globales para eliminar márgenes y padding en el body y html */
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    overflow-x: hidden; /* Asegura que no haya desplazamiento horizontal */
+    background-image: url('/static/img/fondo.jpg');
+    background-attachment: fixed;
+    background-size: cover;
+    background-position: center center;
+}
+
+/* Estilo para la sección principal con el video */
+.video-container {
+    position: relative;
+    width: 100%;
+    height: 100vh; /* Ocupa toda la altura de la pantalla */
+    overflow: hidden; /* Elimina cualquier contenido fuera de los límites */
+}
+
+/* Aseguramos que el video ocupe toda el área */
+.video-container video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Mantiene el video cubriendo el área sin distorsionar */
+}
+
+/* Overlay para suavizar el fondo */
+.overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+}
+
+/* Estilo para la sección "Explora Nuestras Funciones" */
+.functions-container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    text-align: center;
+    z-index: 10;
+}
+
+/* Título de la sección sobre el video */
+.functions-title {
+    position: absolute;
+    top: 10%; /* Puedes ajustar la posición según lo necesites */
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 20;
+    color: white;
+    font-size: 3rem;
+    font-weight: bold;
+}
+
+/* Estilo de las tarjetas dentro de "Explora Nuestras Funciones" */
+.function-card {
+    background-color: rgba(255, 255, 255, 0.8);
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s;
+}
+
+.function-card:hover {
+    transform: scale(1.05);
+}
+
+/* Ajustar la posición de las tarjetas y asegurarse de que se ubiquen sobre el video */
+.function-cards-container {
+    position: absolute;
+    top: 60%; /* Ajusta la posición de las tarjetas */
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 10;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    width: 80%;
+}

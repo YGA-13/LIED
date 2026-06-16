@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LIED - Añadir Pieza</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/repertoire/add_piece.css' %}">
+</head>
+<body class="bg-gray-100 flex flex-col min-h-screen">
+
+    <!-- Fondo fijo -->
+    <div class="hero-bg"></div>
+
+    <!-- Header -->
+    <header class="fixed w-full bg-black text-white shadow-lg z-50">
+        <div class="container mx-auto flex justify-between items-center p-4">
+            <div>
+                <a href="{% url 'home' %}" class="text-3xl font-bold text-red-600 hover:text-red-700 transition-colors">LIED</a>
+            </div>
+            <nav class="space-x-6 hidden md:flex items-center">
+                {% if user.is_authenticated %}
+                    <p class="text-white mr-4">{{ user.username }}</p>
+                    <form action="{% url 'logout' %}" method="post">
+                        {% csrf_token %}
+                        <button type="submit" class="text-white hover:text-red-600 transition-colors">Cerrar sesión</button>
+                    </form>
+                {% else %}
+                    <a href="{% url 'login' %}" class="hover:text-red-600 transition-colors">Iniciar sesión</a>
+                {% endif %}
+            </nav>
+        </div>
+    </header>
+
+    <!-- Contenido Principal -->
+    <div class="relative z-10 flex-grow">
+        <!-- Hero Section -->
+        <div class="hero-content min-h-[70vh] flex items-center justify-center bg-gradient-to-b from-black/70 to-transparent">
+            <div class="container mx-auto text-center px-4">
+                <h1 class="text-5xl font-bold text-white mb-8 drop-shadow-lg">Añadir Nueva Pieza</h1>
+            </div>
+        </div>
+
+        <!-- Formulario para añadir pieza -->
+        <main class="container mx-auto px-4 py-16">
+            <form method="post" enctype="multipart/form-data" class="bg-gray-200 bg-opacity-90 rounded-2xl p-8 shadow-2xl border border-gray-400">
+                {% csrf_token %}
+                <div class="space-y-6">
+                    <!-- Campos personalizados -->
+                    <div class="form-group">
+                        <label class="block text-gray-700 text-sm font-bold mb-2">
+                            Archivo MusicXML (requerido)
+                        </label>
+                        {{ form.partitura_musicxml }}
+                        {% if form.partitura_musicxml.errors %}
+                            <p class="text-red-500 text-xs italic">{{ form.partitura_musicxml.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+
+                    <div class="text-center">
+                        <button type="submit" class="bg-red-600 text-white py-2 px-6 rounded-xl hover:bg-red-700 transition-colors">Guardar</button>
+                        <a href="{% url 'lista_piezas' %}" class="ml-4 text-gray-600 hover:text-gray-800 transition-colors">Cancelar</a>
+                    </div>
+                </div>
+            </form>
+        </main>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-black text-white py-8 mt-20">
+        <div class="container mx-auto text-center">
+            <p class="mb-4">© 2025 LIED. Todos los derechos reservados.</p>
+            <nav class="flex justify-center space-x-6">
+                <a href="{% url 'privacidad' %}" class="hover:text-red-600 transition-colors">Privacidad</a>
+                <a href="{% url 'terminos' %}" class="hover:text-red-600 transition-colors">Términos</a>
+                <a href="{% url 'contacto' %}" class="hover:text-red-600 transition-colors">Contacto</a>
+            </nav>
+        </div>
+    </footer>
+
+</body>
+</html>
